@@ -294,9 +294,6 @@ module.exports.SnowstormEditorProvider = class SnowstormEditorProvider {
 						margin: 0;
 						padding: 0;
 					}
-					#app {
-						margin-left: -20px;
-					}
 				</style>
 			</head>
 			<body>
