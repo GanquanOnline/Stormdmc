@@ -94,7 +94,12 @@ module.exports.SnowstormEditorProvider = class SnowstormEditorProvider {
 		return vscode.window.registerCustomEditorProvider('x11.snowstorm', this);
 	}
 
-
+	/**
+	 * 
+	 * @param {vscode.TextDocument} document 
+	 * @param {vscode.WebviewPanel webviewPanel 
+	 * @param {*} _token 
+	 */
 	resolveCustomTextEditor(document, webviewPanel, _token) {
 
 		webviewPanel.webview.options = {
