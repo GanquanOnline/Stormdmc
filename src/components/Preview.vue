@@ -15,7 +15,7 @@
                     <li v-if="placeholder_keys.length == 0"><label>No undefined variables found</label></li>
                 </ul>
 
-                <div class="tool" @click="hidePlaceholderBar()" title="Hide Placeholder Bar">
+                <div class="tool" @click="hidePlaceholderBar()" title="Hide Variable Placeholder Bar">
                     <X :size="22" />
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 <FlipVertical2 :size="20" v-if="collision" />
                 <Minus :size="20" v-else />
             </div>
-            <div class="tool" :class="{toggle_enabled: show_placeholder_bar}" @click="show_placeholder_bar ? hidePlaceholderBar() : showPlaceholderBar()" title="Show Placeholder Bar">
+            <div class="tool" :class="{toggle_enabled: show_placeholder_bar}" @click="show_placeholder_bar ? hidePlaceholderBar() : showPlaceholderBar()" title="Show Variable Placeholder Bar">
                 <Hash :size="22" />
             </div>
 
