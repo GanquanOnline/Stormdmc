@@ -1,27 +1,27 @@
 <template>
 	<div class="texture_input" :tool="tool">
 		<div class="toolbar">
-			<div class="tool" @click="selectTool('select')" :class="{selected: tool == 'select'}" title="Select">
+			<div class="tool" @click="selectTool('select')" :class="{selected: tool == 'select'}" title="选择">
 				<MousePointer />
 			</div>
-			<div class="tool" @click="selectTool('brush')" :class="{selected: tool == 'brush'}" title="Brush">
+			<div class="tool" @click="selectTool('brush')" :class="{selected: tool == 'brush'}" title="画笔">
 				<Brush />
 			</div>
-			<div class="tool" @click="selectTool('eraser')" :class="{selected: tool == 'eraser'}" title="Eraser">
+			<div class="tool" @click="selectTool('eraser')" :class="{selected: tool == 'eraser'}" title="橡皮擦">
 				<Eraser />
 			</div>
-			<div class="tool" @click="selectTool('fill_tool')" :class="{selected: tool == 'fill_tool'}" title="Paint Bucket">
+			<div class="tool" @click="selectTool('fill_tool')" :class="{selected: tool == 'fill_tool'}" title="油漆桶">
 				<PaintBucket />
 			</div>
-			<div class="tool" @click="selectTool('color_picker')" :class="{selected: tool == 'color_picker'}" title="Color Picker">
+			<div class="tool" @click="selectTool('color_picker')" :class="{selected: tool == 'color_picker'}" title="颜色选择器">
 				<Pipette />
 			</div>
 
 			<span class="undo_controls">
-				<div class="tool" @click="Texture.undo()" title="Undo">
+				<div class="tool" @click="Texture.undo()" title="撤销">
 					<Undo />
 				</div>
-				<div class="tool" @click="Texture.redo()" title="Redo">
+				<div class="tool" @click="Texture.redo()" title="重做">
 					<Redo />
 				</div>
 			</span>
@@ -51,8 +51,8 @@
 			>
 				<div id="canvas_wrapper" ref="canvas_wrapper"></div>
 				<template v-if="UVDefinitionMode() != 'full'">
-					<div class="uv_preview uv_perimeter_preview" title="UV Perimeter" @pointerdown="dragUV($event)" :style="calculateUVPerimeter()"></div>
-					<div class="uv_preview uv_sample_preview" title="UV Sample" @pointerdown="dragUV($event)" :style="calculateUVSample()">
+				<div class="uv_preview uv_perimeter_preview" title="UV 边界" @pointerdown="dragUV($event)" :style="calculateUVPerimeter()"></div>
+				<div class="uv_preview uv_sample_preview" title="UV 采样" @pointerdown="dragUV($event)" :style="calculateUVSample()">
 						<div class="uv_preview_size_handle" @pointerdown.stop="dragUV($event, true)" v-if="tool == 'select'" />
 					</div>
 				</template>
@@ -66,14 +66,14 @@
 			<div class="info">{{ cursor_position.active ? (cursor_position.x + ' x ' + cursor_position.y) : '' }}</div>
 			<div class="info">{{ Math.round(zoom * 100) + '%' }}</div>
 			<template v-if="UVDefinitionMode() == 'animated'">
-				<div class="tool" @click="moveByFrame(-1)" title="Previous Frame">
+				<div class="tool" @click="moveByFrame(-1)" title="上一帧">
 					<ArrowBigLeft :size="20" />
 				</div>
-				<div class="tool" @click="moveByFrame(1)" title="Next Frame">
+				<div class="tool" @click="moveByFrame(1)" title="下一帧">
 					<ArrowBigRight :size="20" />
 				</div>
 			</template>
-			<div class="tool" @click="maximizeViewport()" title="Center Viewport">
+			<div class="tool" @click="maximizeViewport()" title="居中视口">
 				<Maximize :size="20" />
 			</div>
 		</div>
@@ -83,23 +83,23 @@
 				<div class="tool" v-on:click="Texture.reset()"><X /></div>
 				<input id="particle-texture-image" type="file" style="margin-top: 5px;" accept=".png" v-on:change="input.change($event)">
 			</template>
-			<div class="tool" v-if="!input.allow_upload" @click="reloadTexture()" title="Reload Texture">
+			<div class="tool" v-if="!input.allow_upload" @click="reloadTexture()" title="重新加载纹理">
 				<RefreshCcw />
 			</div>
-			<div class="tool" @click="newTexture()" title="New Texture">
+			<div class="tool" @click="newTexture()" title="新建纹理">
 				<PlusSquare />
 			</div>
-			<div class="tool" v-if="Texture.internal_changes" @click="saveTexture()" title="Save">
+			<div class="tool" v-if="Texture.internal_changes" @click="saveTexture()" title="保存">
 				<Save />
 			</div>
 		</div>
 
 		<dialog id="new_texture_dialog" ref="new_texture_dialog" class="modal_dialog">
-			<div class="form_bar"><label>Width</label><input type="number" v-model.number="new_texture_size[0]"></div>
-			<div class="form_bar"><label>Height</label><input type="number" v-model.number="new_texture_size[1]"></div>
+			<div class="form_bar"><label>宽度</label><input type="number" v-model.number="new_texture_size[0]"></div>
+			<div class="form_bar"><label>高度</label><input type="number" v-model.number="new_texture_size[1]"></div>
 			<div class="button_bar">
-				<button @click="newTextureConfirm()">Confirm</button>
-				<button @click="$refs.new_texture_dialog.close()">Cancel</button>
+				<button @click="newTextureConfirm()">确定</button>
+				<button @click="$refs.new_texture_dialog.close()">取消</button>
 			</div>
 		</dialog>
 	</div>

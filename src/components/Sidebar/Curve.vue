@@ -56,20 +56,20 @@
 			<input v-if="curve.config.mode !== 'bezier_chain'" type="number" step="0.01" v-model="node" @input="curve.setNode(curve.selected_point, node)">
 
 			<template v-if="curve.config.mode == 'bezier_chain'">
-				<label>T:</label>
+				<label>时间：</label>
 				<input type="number" step="0.01" min="0" max="1" v-model="node.time" @input="registerNodeChange('time')">
 				
-				<label>Value:</label>
+				<label>数值：</label>
 				<input type="number" step="0.01" v-model="node.left_value" @input="registerNodeChange('left_value')">
 				<input v-if="node.left_value != node.right_value" type="number" step="0.01" v-model="node.right_value" @input="registerNodeChange('right_value')">
-				<div class="tool slim" @click="((node.left_value == node.right_value) ? node.right_value += 0.1 : node.right_value = node.left_value); registerNodeChange()" title="Connect Sides">
+				<div class="tool slim" @click="((node.left_value == node.right_value) ? node.right_value += 0.1 : node.right_value = node.left_value); registerNodeChange()" title="连接两侧">
 					<i class="unicode_icon">{{(node.left_value == node.right_value) ? '=' : '≠'}}</i>
 				</div>
 
-				<label>Slope:</label>
+				<label>斜率：</label>
 				<input type="number" step="0.01" v-model="node.left_slope" @input="registerNodeChange('left_slope')">
 				<input v-if="node.left_slope != node.right_slope" type="number" step="0.01" v-model="node.right_slope" @input="registerNodeChange('right_slope')">
-				<div class="tool slim" @click="((node.left_slope == node.right_slope) ? node.right_slope += 0.1 : node.right_slope = node.left_slope); registerNodeChange()" title="Connect Sides">
+				<div class="tool slim" @click="((node.left_slope == node.right_slope) ? node.right_slope += 0.1 : node.right_slope = node.left_slope); registerNodeChange()" title="连接两侧">
 					<i class="unicode_icon">{{(node.left_slope == node.right_slope) ? '=' : '≠'}}</i>
 				</div>
 			</template>
@@ -80,7 +80,7 @@
         </div>
         <div class="curve_footer">
             <div class="fill_line" @mousedown="slideCurveHeight($event)" @touchstart="slideCurveHeight($event)"></div>
-            <div class="tool" style="width: auto;" v-on:click="curve.remove()">Remove Curve</div>
+			<div class="tool" style="width: auto;" v-on:click="curve.remove()">移除曲线</div>
         </div>
     </div>
 </template>

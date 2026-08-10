@@ -4,6 +4,7 @@ import Data from './input_structure'
 import Input from './input'
 import {guid} from './util'
 import registerEdit from './edits'
+import {localizeInputData} from './i18n'
 
 class Curve {
 	constructor(data = 0) {
@@ -67,6 +68,7 @@ class Curve {
 				}
 			})
 		}
+		localizeInputData(this.inputs)
 		this.nodes = data.nodes instanceof Array ? data.nodes : [0, 1, 0];
 		this.selected_point = -1;
 		this.svg_data = '';

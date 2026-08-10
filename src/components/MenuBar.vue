@@ -10,18 +10,18 @@
         </li>
 		
 		<template v-if="isVSCExtension">
-        	<li class="mode_selector" @click="openCodeViewer(true)" title="Open Code View to Side"><i class="unicode_icon split">{{'\u2385'}}</i></li>
-        	<li class="mode_selector" @click="openCodeViewer(false)" title="Open as Code View">Switch to Code</li>
+		<li class="mode_selector" @click="openCodeViewer(true)" title="在侧边打开代码视图"><i class="unicode_icon split">{{'\u2385'}}</i></li>
+		<li class="mode_selector" @click="openCodeViewer(false)" title="以代码视图打开">切换到代码</li>
 		</template>
 		<template v-else-if="!portrait_view">
-        	<li class="mode_selector code" :class="{selected: selected_tab == 'code'}" @click="$emit('changetab', 'code')">Code</li>
-        	<li class="mode_selector preview" :class="{selected: selected_tab == 'preview'}" @click="$emit('changetab', 'preview')">Preview</li>
+		<li class="mode_selector code" :class="{selected: selected_tab == 'code'}" @click="$emit('changetab', 'code')">代码</li>
+		<li class="mode_selector preview" :class="{selected: selected_tab == 'preview'}" @click="$emit('changetab', 'preview')">预览</li>
 		</template>
 
-		<div v-if="!portrait_view" @click="openHelpPanel()" class="mode_selector highlighting_button" :class="{selected: is_help_panel_open}" title="Documentation">
+		<div v-if="!portrait_view" @click="openHelpPanel()" class="mode_selector highlighting_button" :class="{selected: is_help_panel_open}" title="文档">
 			<HelpCircle :size="20" />
 		</div>
-		<div v-if="canShare" @click="onShareParticle" class="mode_selector highlighting_button" title="Share">
+		<div v-if="canShare" @click="onShareParticle" class="mode_selector highlighting_button" title="分享">
 			<Share2 :size="20" />
 		</div>
     </ul>
@@ -53,61 +53,61 @@ function openLink(link) {
 
 const Menu = [
 	{
-		label: 'File',
+		label: '文件',
 		children: [
-			{label: 'New File', click: () => {startNewProject()}},
+			{label: '新建文件', click: () => {startNewProject()}},
 		]
 	},
 	{
-		label: 'Examples',
+		label: '示例',
 		children: [
-			{label: 'Loading', 	click: () => {loadPreset('loading')}},
-			{label: 'Rainbow', 	click: () => {loadPreset('rainbow')}},
-			{label: 'Rain', 	click: () => {loadPreset('rain')}},
-			{label: 'Snow', 	click: () => {loadPreset('snow')}},
-			{label: 'Fire', 	click: () => {loadPreset('fire')}},
-			{label: 'Magic', 	click: () => {loadPreset('magic')}},
-			{label: 'Trail', 	click: () => {loadPreset('trail')}},
-			{label: 'Billboard',click: () => {loadPreset('billboard')}},
+			{label: '加载', 	click: () => {loadPreset('loading')}},
+			{label: '彩虹', 	click: () => {loadPreset('rainbow')}},
+			{label: '雨', 	click: () => {loadPreset('rain')}},
+			{label: '雪', 	click: () => {loadPreset('snow')}},
+			{label: '火焰', 	click: () => {loadPreset('fire')}},
+			{label: '魔法', 	click: () => {loadPreset('magic')}},
+			{label: '轨迹', 	click: () => {loadPreset('trail')}},
+			{label: '公告板',click: () => {loadPreset('billboard')}},
 		]
 	},
 	{
-		label: 'View',
+		label: '视图',
 		children: [
-			{label: 'Grid', click: () => {
+			{label: '网格', click: () => {
 				View.grid.visible = !View.grid.visible;
 				setOption('grid_visible', View.grid.visible);
 			}},
-			{label: 'Reference Block', click: () => {
+			{label: '参考方块', click: () => {
 				View.minecraft_block.visible = !View.minecraft_block.visible;
 				setOption('minecraft_block_visible', View.minecraft_block.visible);
 			}},
-			{label: 'Axis Helper', click: () => {
+			{label: '坐标轴辅助线', click: () => {
 				View.helper.visible = !View.helper.visible;
 				setOption('axis_helper_visible', View.grid.visible);
 			}},
-			{label: 'Take Screenshot', click: () => { View.screenshot() }},
+			{label: '截图', click: () => { View.screenshot() }},
 		]
 	},
 	{
-		label: 'Help',
+		label: '帮助',
 		children: [
-			{label: 'Open Documentation', click: (vm) => { vm.openHelpPanel('', '') }},
-			{label: 'Molang Reference', click: (vm) => { vm.openHelpPanel('general', 'molang') }},
-			{label: 'Snowstorm Tutorial', click: () => { openLink('https://docs.microsoft.com/en-us/minecraft/creator/documents/particleeffects') }},
-			{label: 'Tutorial Video', click: () => { openLink('https://youtu.be/J1Ub1tbO9gg') }},
-			{label: 'Format Documentation', click: () => { openLink('https://docs.microsoft.com/en-us/minecraft/creator/reference/content/particlesreference/') }},
-			{label: 'Molang Grapher', click: () => { openLink('https://jannisx11.github.io/molang-grapher/') }},
-			{label: 'Report a Bug', click: () => { openLink('https://github.com/JannisX11/snowstorm/issues') }},
-			{label: 'Discord Server', click: () => { openLink('https://discord.gg/W9d78Z8AvM') }},
+			{label: '打开文档', click: (vm) => { vm.openHelpPanel('', '') }},
+			{label: 'Molang 参考', click: (vm) => { vm.openHelpPanel('general', 'molang') }},
+			{label: 'Snowstorm 教程', click: () => { openLink('https://docs.microsoft.com/en-us/minecraft/creator/documents/particleeffects') }},
+			{label: '教程视频', click: () => { openLink('https://youtu.be/J1Ub1tbO9gg') }},
+			{label: '格式文档', click: () => { openLink('https://docs.microsoft.com/en-us/minecraft/creator/reference/content/particlesreference/') }},
+			{label: 'Molang 绘图器', click: () => { openLink('https://jannisx11.github.io/molang-grapher/') }},
+			{label: '报告问题', click: () => { openLink('https://github.com/Dbackolds/stormdmc/issues') }},
+			{label: 'Discord 服务器', click: () => { openLink('https://discord.gg/W9d78Z8AvM') }},
 		]
 	}
 ]
 
 if (!isVSCExtension) {
 	Menu[0].children.push(
-		{label: 'Import', click: () => {importFile()}},
-		{label: 'Download', click: () => {downloadFile()}}
+		{label: '导入', click: () => {importFile()}},
+		{label: '下载', click: () => {downloadFile()}}
 	)
 }
 

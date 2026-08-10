@@ -3,6 +3,7 @@
 
 		<div id="dialog_blackout" v-if="dialog" @click="closeDialog"></div>
 		<warning-dialog v-if="dialog == 'warnings'" @close="closeDialog"></warning-dialog>
+		<mcp-approval-dialog v-if="agent_runtime" :runtime="agent_runtime"></mcp-approval-dialog>
 
         <header>
 			<logo v-if="portrait_view" />
@@ -15,6 +16,7 @@
 				@open_help_page="openHelpPage"
 			></menu-bar>
 			<expression-bar></expression-bar>
+			<mcp-status v-if="agent_runtime" :runtime="agent_runtime"></mcp-status>
         </header>
 
 		<preview v-show="tab == 'preview'" ref="preview" @opendialog="openDialog">
@@ -59,6 +61,9 @@ import vscode from '../vscode_extension';
 import {SlidersHorizontal, FileJson, Move3D, HelpCircle} from 'lucide-vue'
 import Logo from './Sidebar/Logo.vue';
 import {PanelLeftOpen} from "lucide-vue";
+import McpStatus from './McpStatus.vue';
+import McpApprovalDialog from './McpApprovalDialog.vue';
+import {createAgentRuntime} from '../agent/runtime';
 
 if (!vscode) {
 	var startup_count = localStorage.getItem('snowstorm_startup_count') || 0;
@@ -99,7 +104,7 @@ export default {
 	name: 'app',
 	components: {
 		Preview, CodeViewer, MenuBar, Sidebar, HelpPanel, WarningDialog, ExpressionBar, InfoBox,
-		SlidersHorizontal, FileJson, Move3D, Logo, PanelLeftOpen, HelpCircle
+		SlidersHorizontal, FileJson, Move3D, Logo, PanelLeftOpen, HelpCircle, McpStatus, McpApprovalDialog
 	},
 	data() {return {
 		code: '',
@@ -110,7 +115,18 @@ export default {
 		is_sidebar_open: getInitialIsSidebarOpen(),
 		is_help_panel_open: false,
 		portrait_view,
+		agent_runtime: null,
 	}},
+	mounted() {
+		if (!vscode) {
+			this.agent_runtime = createAgentRuntime(this);
+			this.agent_runtime.start();
+			window.SnowstormAgent = this.agent_runtime;
+		}
+	},
+	beforeDestroy() {
+		this.agent_runtime?.stop();
+	},
 	methods: {
 		setTab(tab) {
 			this.previous_tab = this.tab;

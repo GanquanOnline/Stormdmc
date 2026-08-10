@@ -1,4 +1,5 @@
 import Input from './input'
+import {localizeInputData} from './i18n'
 import Gradient from './gradient'
 import {Config} from './emitter'
 import vscode from './vscode_extension';
@@ -832,6 +833,10 @@ const Data = {
 		}
 	},
 };
+
+// Keep the particle schema and all runtime identifiers in English while
+// presenting labels, options and descriptions in Chinese.
+localizeInputData(Data)
 
 
 function forEachInput(cb) {

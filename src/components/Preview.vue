@@ -8,43 +8,43 @@
                     <li v-for="(key) in placeholder_keys" :key="key">
                         <label :for="'placeholder_'+key">{{ key.replace(key.substring(1, key.indexOf('.')), '') }}</label>
                         <input type="number" :id="'placeholder_'+key" :value="placeholder_values[key] || 0" @input="updatePlaceholderValue(key, $event)">
-                        <div class="tool" v-if="key.startsWith('variable')" @click="bakePlaceholderVariable(key)" title="Bake variable value into all expressions">
+                        <div class="tool" v-if="key.startsWith('variable')" @click="bakePlaceholderVariable(key)" title="将变量值写入所有表达式">
                             <CheckCheck :size="20" />
                         </div>
                     </li>
-                    <li v-if="placeholder_keys.length == 0"><label>No undefined variables found</label></li>
+                    <li v-if="placeholder_keys.length == 0"><label>没有发现未定义变量</label></li>
                 </ul>
 
-                <div class="tool" @click="hidePlaceholderBar()" title="Hide Variable Placeholder Bar">
+                <div class="tool" @click="hidePlaceholderBar()" title="隐藏变量占位栏">
                     <X :size="22" />
                 </div>
             </div>
         </div>
         <footer>
             <select id="loop_mode" v-model="loop_mode" @change="changeLoopMode()">
-                <option value="auto">Auto</option>
-                <option value="looping">Looping</option>
-                <option value="once">Once</option>
+                <option value="auto">自动</option>
+                <option value="looping">循环</option>
+                <option value="once">一次</option>
             </select>
             <select id="parent_mode" v-model="parent_mode" @change="changeParentMode()">
-                <option value="world">World</option>
-                <option value="entity">Entity</option>
-                <option value="locator">Locator</option>
+                <option value="world">世界</option>
+                <option value="entity">实体</option>
+                <option value="locator">定位器</option>
             </select>
-            <div class="tool ground_collision" :class="{toggle_enabled: collision}" @click="toggleCollision()" title="Preview Collisions">
+            <div class="tool ground_collision" :class="{toggle_enabled: collision}" @click="toggleCollision()" title="预览碰撞">
                 <FlipVertical2 :size="20" v-if="collision" />
                 <Minus :size="20" v-else />
             </div>
-            <div class="tool" :class="{toggle_enabled: show_placeholder_bar}" @click="show_placeholder_bar ? hidePlaceholderBar() : showPlaceholderBar()" title="Show Variable Placeholder Bar">
+            <div class="tool" :class="{toggle_enabled: show_placeholder_bar}" @click="show_placeholder_bar ? hidePlaceholderBar() : showPlaceholderBar()" title="显示变量占位栏">
                 <Hash :size="22" />
             </div>
 
             <div class="spacing" />
 
-            <div class="tool" @click="startAnimation()" title="Play">
+            <div class="tool" @click="startAnimation()" title="播放">
                 <Play :size="22" />
             </div>
-            <div class="tool" @click="togglePause()" title="Pause">
+            <div class="tool" @click="togglePause()" title="暂停">
                 <Pause :size="22" />
             </div>
 
@@ -56,10 +56,10 @@
         </footer>
 
         <dialog id="bake_placeholder_confirm_dialog" ref="bake_placeholder_confirm_dialog" class="modal_dialog" style="max-width: 308px;">
-            <div class="form_bar">Do you want to replace all occurrences of '{{ bake_placeholder_key }}' with the value '{{ placeholder_values[bake_placeholder_key] }}'?</div>
+            <div class="form_bar">是否将“{{ bake_placeholder_key }}”的所有出现位置替换为“{{ placeholder_values[bake_placeholder_key] }}”？</div>
             <div class="button_bar">
-                <button @click="bakePlaceholderVariableConfirm()">Confirm</button>
-                <button @click="$refs.bake_placeholder_confirm_dialog.close()">Cancel</button>
+                <button @click="bakePlaceholderVariableConfirm()">确定</button>
+                <button @click="$refs.bake_placeholder_confirm_dialog.close()">取消</button>
             </div>
         </dialog>
     </main>
@@ -75,7 +75,7 @@
 
     import {OptionValues} from './../options'
 
-    import minecraft_block from '../../assets/minecraft_block.png'
+    import minecraft_block from '!!url-loader?limit=4096&esModule=false!../../assets/minecraft_block.png'
 
     import {
         FlipVertical2,
@@ -150,13 +150,20 @@
     }
     CustomAxesHelper.prototype = Object.create( THREE.LineSegments.prototype );
 
-    View.screenshot = function() {
+    View.captureDataURL = function() {
+        if (!View.renderer || !View.scene || !View.camera) return null;
         // Set clear background
         let color = new THREE.Color(BACKGROUND_COLOR);
         View.renderer.setClearColor(color, 0);
         View.renderer.render(View.scene, View.camera);
         let dataurl = View.canvas.toDataURL()
         View.renderer.setClearColor(color);
+        return dataurl;
+    }
+
+    View.screenshot = function() {
+        let dataurl = View.captureDataURL();
+        if (!dataurl) return;
 
         let is_ff = navigator.userAgent.toLowerCase().indexOf('firefox') > -1
         let download = document.createElement('a');

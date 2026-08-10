@@ -1,4 +1,6 @@
-export default {
+import {localizeHelpData} from './i18n'
+
+const HelpData = {
 	general: {
 		title: 'General',
 		pages: {
@@ -817,3 +819,6 @@ export default {
 		}
 	},
 }
+
+localizeHelpData(HelpData)
+export default HelpData

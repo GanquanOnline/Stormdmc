@@ -3,12 +3,12 @@
 		<div v-for="(input, inp_key) of inputs" :class="{input_help: true, visible: isInputVisible(inp_key)}">
 			<h2>
 				<Brackets v-if="input.type == 'molang'" title="Molang" />
-				<WholeWord v-else-if="input.type == 'text'" title="Text" />
-				<CheckSquare v-else-if="input.type == 'toggle'" title="Toggle" />
-				<Menu v-else-if="input.type == 'select'" title="Select" />
-				<Gauge v-else-if="input.type == 'number'" title="Number" />
-				<Palette v-else-if="input.type == 'color'" title="Color" />
-				<Zap v-else-if="input.type == 'event_trigger'" title="Event Trigger" />
+				<WholeWord v-else-if="input.type == 'text'" title="文本" />
+				<CheckSquare v-else-if="input.type == 'toggle'" title="开关" />
+				<Menu v-else-if="input.type == 'select'" title="选择" />
+				<Gauge v-else-if="input.type == 'number'" title="数字" />
+				<Palette v-else-if="input.type == 'color'" title="颜色" />
+				<Zap v-else-if="input.type == 'event_trigger'" title="事件触发器" />
 				{{ input.label || getInput(inp_key).label }}
 			</h2>
 			<div v-if="input.type == 'molang'" class="input_info_bar">
@@ -53,22 +53,22 @@ export default {
 	},
 	data: () => ({
 		labels: {
-			text: 'Text',
-			number: 'Number',
+			text: '文本',
+			number: '数字',
 			molang: 'Molang',
-			toggle: 'Toggle',
+			toggle: '开关',
 
-			emitter: 'Per Emitter',
-			particle: 'Per Particle',
-			curve: 'Per Curve',
-			spawned_emitter: 'Spawned Emitter Context',
+			emitter: '每个发射器',
+			particle: '每个粒子',
+			curve: '每条曲线',
+			spawned_emitter: '生成发射器上下文',
 
-			evaluation_once: 'Evaluated once',
-			evaluation_per_tick: 'Evaluated each tick',
-			evaluation_per_loop: 'Evaluated each loop',
-			evaluation_per_use: 'Evaluated each time',
-			evaluation_per_render: 'Evaluated each render',
-			evaluation_per_particle: 'Evaluated on particle spawn',
+			evaluation_once: '计算一次',
+			evaluation_per_tick: '每个 Tick 计算',
+			evaluation_per_loop: '每次循环计算',
+			evaluation_per_use: '每次使用时计算',
+			evaluation_per_render: '每次渲染时计算',
+			evaluation_per_particle: '生成粒子时计算',
 		},
 		input_context_color: {
 			emitter: '#e98989',

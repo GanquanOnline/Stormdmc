@@ -1,3 +1,18 @@
-node_modules
+# 依赖与本地缓存
+node_modules/
+**/node_modules/
+.playwright-cli/
+
+# 构建输出与临时报告
 dist/plain-report.txt
-dist/images
+dist/images/
+mcp_server/dist/
+output/
+
+# 与项目无关的本地目录/文件
+target/
+**/target/
+Agents.md
+**/Agents.md
+agents.md
+**/agents.md

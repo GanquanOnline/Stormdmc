@@ -1,0 +1,79 @@
+name: 发布 GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要发布的版本标签，例如 v3.2.3'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: 构建、测试并发布
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            mcp_server/package-lock.json
+
+      - name: 安装根项目依赖
+        run: npm ci
+
+      - name: 安装 MCP 依赖
+        run: npm ci --prefix mcp_server
+
+      - name: 构建网页资源
+        run: npm run production
+
+      - name: 构建 MCP 服务
+        run: npm run mcp:build
+
+      - name: 运行 MCP 测试
+        run: npm run mcp:test
+
+      - name: 打包发布附件
+        shell: bash
+        run: |
+          tag="${GITHUB_REF_NAME}"
+          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then tag="${{ inputs.tag }}"; fi
+          mkdir -p release
+          git archive --format=zip --output="release/stormdmc-${tag}.zip" HEAD
+          tar -czf "release/stormdmc-${tag}.tar.gz" \
+            --exclude='./.git' --exclude='./node_modules' --exclude='./mcp_server/node_modules' \
+            --exclude='./mcp_server/dist' --exclude='./output' --exclude='./.playwright-cli' .
+          mkdir -p "release/stormdmc-mcp-${tag}"
+          cp -R mcp_server/dist "release/stormdmc-mcp-${tag}/dist"
+          cp mcp_server/package.json mcp_server/package-lock.json mcp_server/README.md "release/stormdmc-mcp-${tag}/"
+          tar -czf "release/stormdmc-mcp-${tag}.tar.gz" -C release "stormdmc-mcp-${tag}"
+          rm -rf "release/stormdmc-mcp-${tag}"
+          cp package.json mcp_server/package.json release/
+
+      - name: 创建 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          name: StormDMC Snowstorm ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          body: |
+            ## 本次更新
+
+            - 更新 Snowstorm 主项目与 VS Code 扩展补丁版本。
+            - 集成 MCP 本地服务、浏览器桥接、AI 修改审批、预览截图和工作区原子保存能力。
+            - 更新中文 README、MCP 使用指南和 GitHub Wiki。
+            - 增加自动构建、测试与 Release 发布工作流。
+          files: release/*

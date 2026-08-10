@@ -10,7 +10,7 @@
 				{{ option }}
 			</li>
 			<template v-if="getEventIDs().length == 0">
-				No events available
+				暂无可用事件
 			</template>
 		</ul>
 	</div>

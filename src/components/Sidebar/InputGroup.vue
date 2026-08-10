@@ -10,7 +10,7 @@
 			v-bind:id="subject_key +'-'+ group_key +'-'+ key"
 		>
 			<label v-bind:for="key" v-if="input.label">{{ input.label }}</label>
-			<div class="tool input_expand_button" v-if="input.expandable" @click="toggleExpand(input)" title="Expand">
+			<div class="tool input_expand_button" v-if="input.expandable" @click="toggleExpand(input)" title="展开">
 				<ChevronDown :size="20" v-if="!input.expanded" />
 				<ChevronUp :size="20" v-else />
 			</div>
@@ -125,7 +125,7 @@
 							<label>{{ event_obj.event }}</label>
 							<X :size="18" class="highlighting_button" @click="input.value.remove(event_obj); input.change($event);" />
 							<div class="event_min_speed">
-								<label>Min Speed</label>
+								<label>最小速度</label>
 								<input type="number" v-model.number="event_obj.min_speed" @change=" input.change($event);" min="0">
 							</div>
 						</li>
@@ -436,4 +436,3 @@ export default {
 		flex-shrink: 0;
 	}
 </style>
-

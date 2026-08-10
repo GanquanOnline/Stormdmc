@@ -2,12 +2,12 @@
 	<div id="help_panel" :class="{portrait_view: portrait_view}">
 		<div class="help_header">
 			<X class="close_button highlighting_button" v-if="!portrait_view" :size="22" @click="$emit('close')" />
-			<a class="back_button" v-if="category_key" @click="openPage('', '')"><ChevronLeft :size="20" /> Back to overview</a>
+			<a class="back_button" v-if="category_key" @click="openPage('', '')"><ChevronLeft :size="20" /> 返回总览</a>
 		</div>
 
 		<content ref="content">
 			<template v-if="!category_key">
-				<h1>Documentation</h1>
+				<h1>文档</h1>
 				<ul>
 					<li v-for="(cat, cat_key) in HelpData">
 						<span class="category_title">{{ cat.title }}</span>

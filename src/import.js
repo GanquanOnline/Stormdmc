@@ -122,7 +122,7 @@ function importFile() {
 	})
 }
 function startNewProject(force) {
-	if (vscode || force || confirm('This action may clear your current work. Do you want to continue?')) {
+	if (vscode || force || confirm('此操作可能会清除当前工作，是否继续？')) {
 		Config.unsupported_fields = {};
 		Config.reset();
 		Texture.reset();

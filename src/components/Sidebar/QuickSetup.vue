@@ -1,126 +1,126 @@
 <template>
 	<div class="quick_setup">
 		<div class="input_group">
-			<h4>Shape & Motion</h4>
+			<h4>形状与运动</h4>
 			<ul class="preset_option_list">
 				<li @click="set('shape', 'sphere')" :class="{selected: shape == 'sphere'}">
 					<Loader :size="38" :stroke-width="1" />
-					Sphere
+					球体
 				</li>
 				<li @click="set('shape', 'rain')" :class="{selected: shape == 'rain'}">
 					<CloudRain :size="38" :stroke-width="1" />
-					Rain
+					雨
 				</li>
 				<li @click="set('shape', 'ring')" :class="{selected: shape == 'ring'}">
 					<Torus :size="38" :stroke-width="1" />
-					Ring
+					环形
 				</li>
 				<li @click="set('shape', 'gravitate')" :class="{selected: shape == 'gravitate'}">
 					<Magnet :size="38" :stroke-width="1" />
-					Gravitate to Center
+					向中心聚拢
 				</li>
 			</ul>
 			<div class="input_bar">
-				<label>Speed</label>
+				<label>速度</label>
 				<input type="range" v-model="speed" min="0" max="20" step="0.5" >
 				<label class="range_number_label">{{ speed }}</label>
 			</div>
 		</div>
 
 		<div class="input_group">
-			<h4>Timing</h4>
+			<h4>时间</h4>
 			<ul class="preset_option_list">
 				<li @click="set('timing', 'burst')" :class="{selected: timing == 'burst'}">
 					<Bomb :size="38" :stroke-width="1" />
-					Burst
+					爆发
 				</li>
 				<li @click="set('timing', 'steady')" :class="{selected: timing == 'steady'}">
 					<Timer :size="38" :stroke-width="1" />
-					Steady
+					持续
 				</li>
 			</ul>
 			<div class="input_bar">
-				<label>Amount</label>
+				<label>数量</label>
 				<input type="range" v-model="amount" min="1" max="120" step="1" >
 				<label class="range_number_label">{{ amount }}</label>
 			</div>
 			<div class="input_bar">
-				<label>Particle Lifetime</label>
+				<label>粒子生命周期</label>
 				<input type="range" v-model="particle_lifetime" min="0.1" max="10" step="0.1" >
 				<label class="range_number_label">{{ particle_lifetime }}</label>
 			</div>
 		</div>
 
 		<div class="input_group">
-			<h4>Physics</h4>
+			<h4>物理</h4>
 			<ul class="preset_option_list">
 				<li @click="set('collision', 'none')" :class="{selected: collision == 'none'}">
 					<CircleSlash :size="38" :stroke-width="1" />
-					None
+					无
 				</li>
 				<li @click="set('collision', 'solid')" :class="{selected: collision == 'solid'}">
 					<Cuboid :size="38" :stroke-width="1" />
-					Solid
+					实体
 				</li>
 				<li @click="set('collision', 'smoke')" :class="{selected: collision == 'smoke'}">
 					<Cloud :size="38" :stroke-width="1" />
-					Smoke
+					烟雾
 				</li>
 				<li @click="set('collision', 'ball')" :class="{selected: collision == 'ball'}">
 					<Aperture :size="38" :stroke-width="1" />
-					Ball
+					球
 				</li>
 				<li @click="set('collision', 'paper')" :class="{selected: collision == 'paper'}">
 					<Scroll :size="38" :stroke-width="1" />
-					Paper
+					纸片
 				</li>
 			</ul>
 		</div>
 
 		<div class="input_group">
 			<h4>
-				Sprite
+				精灵图
 				<CreativeCommons :size="20" @click="show_sprite_license = !show_sprite_license" />
 			</h4>
 			<p style="padding: 2px 12px;" v-if="show_sprite_license">
-				All sprites listed below are <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">copyright-free (CC0)</a> and free to use and modify.
+				下列所有精灵图均为<a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">无版权限制（CC0）</a>，可自由使用和修改。
 			</p>
 			<ul class="preset_option_list">
 				<li @click="set('sprite', 'ball')" :class="{selected: sprite == 'ball'}">
 					<img :src="sprites.SpriteBall" height="45" />
-					Ball
+					球
 				</li>
 				<li @click="set('sprite', 'dirt')" :class="{selected: sprite == 'dirt'}">
 					<img :src="sprites.SpriteDirt" height="45" />
-					Dirt
+					泥土
 				</li>
 				<li @click="set('sprite', 'leaves')" :class="{selected: sprite == 'leaves'}">
 					<img :src="sprites.SpriteLeaves" height="45" />
-					Leaves
+					树叶
 				</li>
 				<li @click="set('sprite', 'smoke')" :class="{selected: sprite == 'smoke'}">
 					<img :src="sprites.SpriteSmoke" height="45" class="frames_8" />
-					Smoke
+					烟雾
 				</li>
 				<li @click="set('sprite', 'dust')" :class="{selected: sprite == 'dust'}">
 					<img :src="sprites.SpriteDust" height="45" class="frames_8" />
-					Dust
+					尘土
 				</li>
 				<li @click="set('sprite', 'sparkle')" :class="{selected: sprite == 'sparkle'}">
 					<img :src="sprites.SpriteSparkle" height="45" class="frames_4" />
-					Sparkle
+					闪光
 				</li>
 				<li @click="set('sprite', 'magic')" :class="{selected: sprite == 'magic'}">
 					<img :src="sprites.SpriteMagic" height="45" class="frames_8" />
-					Magic
+					魔法
 				</li>
 			</ul>
 			<div class="input_bar">
-				<label for="quick_rotation_checkbox">Random Rotation</label>
+				<label for="quick_rotation_checkbox">随机旋转</label>
 				<checkbox id="quick_rotation_checkbox" v-model="random_rotation" />
 			</div>
 			<div class="input_bar">
-				<label for="quick_lighting_checkbox">Glow in the dark</label>
+				<label for="quick_lighting_checkbox">夜间发光</label>
 				<checkbox id="quick_lighting_checkbox" v-model="lighting" />
 			</div>
 		</div>
@@ -146,13 +146,13 @@ import {
 import Checkbox from '../Form/Checkbox.vue'
 import { Texture } from '../../texture_edit';
 
-import SpriteBall from '../../../assets/ball.png'
-import SpriteDirt from '../../../assets/dirt.png'
-import SpriteLeaves from '../../../assets/leaves.png'
-import SpriteSmoke from '../../../assets/smoke.png'
-import SpriteDust from '../../../assets/dust.png'
-import SpriteSparkle from '../../../assets/sparkle.png'
-import SpriteMagic from '../../../assets/magic.png'
+import SpriteBall from '!!url-loader?limit=4096&esModule=false!../../../assets/ball.png'
+import SpriteDirt from '!!url-loader?limit=4096&esModule=false!../../../assets/dirt.png'
+import SpriteLeaves from '!!url-loader?limit=4096&esModule=false!../../../assets/leaves.png'
+import SpriteSmoke from '!!url-loader?limit=4096&esModule=false!../../../assets/smoke.png'
+import SpriteDust from '!!url-loader?limit=4096&esModule=false!../../../assets/dust.png'
+import SpriteSparkle from '!!url-loader?limit=4096&esModule=false!../../../assets/sparkle.png'
+import SpriteMagic from '!!url-loader?limit=4096&esModule=false!../../../assets/magic.png'
 import { QuickSetup } from '../../emitter';
 import registerEdit from '../../edits';
 

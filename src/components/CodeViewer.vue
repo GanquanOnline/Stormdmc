@@ -1,7 +1,7 @@
 <template>
     <main id="code" class="code">
         <div class="menu">
-            <button @click="copy()"><Copy :size="20" />Copy</button>
+            <button @click="copy()"><Copy :size="20" />复制</button>
         </div>
 		<prism language="json">{{ code }}</prism>
     </main>

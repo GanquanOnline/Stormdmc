@@ -48,7 +48,7 @@
 			<div class="input_group" v-if="selected_subject_key == 'effect'">
 				<button id="test_quick_setup_button" @click="selectSubject('setup')">
 					<Wand />
-					Quick Setup
+						快速设置
 				</button>
 			</div>
 

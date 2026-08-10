@@ -345,6 +345,16 @@ const IO = {
 
 		var file_name = options.name + (options.extensions ? '.'+options.extensions[0] : '')
 		var callback_used;
+		if (window.snowstormDesktop && typeof window.snowstormDesktop.saveFile === 'function') {
+			window.snowstormDesktop.saveFile({
+				name: file_name,
+				content: options.content,
+				binary: options.savetype === 'image'
+			}).then(() => {
+				if (typeof cb === 'function') cb();
+			}).catch(error => console.error('Snowstorm save failed', error));
+			return;
+		}
 
 		if (window.chooseFile) {}
 		if (options.custom_writer) {

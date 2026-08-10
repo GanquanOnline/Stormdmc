@@ -19,6 +19,7 @@ function processEdit(id) {
         let handler = EditListeners[key];
         handler(id)
     }
+    window.dispatchEvent(new CustomEvent('snowstorm-edit', {detail: {id}}));
 }
 
 function wrapTimeoutInit() {

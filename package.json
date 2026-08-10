@@ -1,6 +1,6 @@
 {
 	"name": "snowstorm",
-	"version": "3.2.2",
+	"version": "3.2.3",
 	"description": "Minecraft Bedrock Edition particle editor",
 	"author": {
 		"name": "JannisX11",
@@ -8,7 +8,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/JannisX11/snowstorm"
+		"url": "https://github.com/Dbackolds/stormdmc.git"
 	},
 	"license": "GPL-3.0-or-later",
 	"scripts": {
@@ -19,10 +19,22 @@
 		"hot": "mix watch --hot",
 		"production": "mix --production",
 		"extension": "npm run dev",
-		"build-extension": "cd ./vscode_extension && vsce package"
+		"build-extension": "cd ./vscode_extension && vsce package",
+		"mcp:install": "npm --prefix mcp_server install",
+		"mcp:dev": "npm --prefix mcp_server run dev",
+		"mcp:build": "npm --prefix mcp_server run build",
+		"mcp:start": "npm --prefix mcp_server run start --",
+		"mcp:test": "npm --prefix mcp_server test",
+		"mcp:e2e": "npm --prefix mcp_server run e2e",
+		"desktop:prepare": "npm run production && npm --prefix mcp_server run build",
+		"desktop:dev": "npm run desktop:prepare && electron . --snowstorm-editor",
+		"desktop:pack": "npm run desktop:prepare && electron-builder --dir",
+		"desktop:build": "npm run desktop:prepare && electron-builder --win nsis"
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
+		"electron": "^43.3.0",
+		"electron-builder": "^26.15.3",
 		"laravel-mix": "^6.0.49",
 		"sass": "^1.30.0",
 		"sass-loader": "^8.0.2",
@@ -46,5 +58,38 @@
 		"vue-color": "^2.8.2",
 		"vue-prism-component": "^1.2.0",
 		"wintersky": "^1.3.3"
+	},
+	"main": "desktop/main.cjs",
+	"build": {
+		"appId": "com.snowstorm.particle-editor",
+		"productName": "Snowstorm",
+		"artifactName": "Snowstorm-${version}-Setup.${ext}",
+		"directories": {"output": "release"},
+		"files": [
+			"desktop/**/*",
+			"index.html",
+			"favicon.ico",
+			"icon.png",
+			"manifest.webmanifest",
+			"service_worker.js",
+			"dist/**/*",
+			"mcp_server/dist/**/*",
+			"mcp_server/package.json"
+		],
+		"extraResources": [
+			{"from": "mcp_server/dist", "to": "mcp_server/dist"},
+			{"from": "mcp_server/node_modules", "to": "mcp_server/node_modules"}
+		],
+		"win": {
+			"target": [{"target": "nsis", "arch": ["x64"]}],
+			"icon": "favicon.ico"
+		},
+		"nsis": {
+			"oneClick": false,
+			"allowToChangeInstallationDirectory": true,
+			"createDesktopShortcut": true,
+			"createStartMenuShortcut": true,
+			"shortcutName": "Snowstorm"
+		}
 	}
 }

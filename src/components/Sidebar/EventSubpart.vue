@@ -2,7 +2,7 @@
 	<div class="event_subpart">
 		<div v-if="subpart.sequence">
 			<div class="subpart_option_head_bar">
-				<label class="descriptor_label">Sequence</label>
+				<label class="descriptor_label">序列</label>
 			</div>
 			<ul class="nested_list sortable">
 				<li v-for="(option, index) in subpart.sequence" :key="option.uuid">
@@ -10,66 +10,66 @@
 						<GripHorizontal @mousedown="sortList(subpart.sequence, $event)" />
 						<label>#{{ index }}</label>
 						<div class="fill_line" />
-						<div class="remove_button highlighting_button" title="Remove Option" @click="removeSequenceOption(option)"><X /></div>
+						<div class="remove_button highlighting_button" title="移除选项" @click="removeSequenceOption(option)"><X /></div>
 					</div>
 					<event-subpart :subpart="option" @modify_event="modifyEvent" />
 				</li>
 			</ul>
-			<list-add-button title="Add Sequence Option" class="list_add_button" @click="addSequenceOption()" />
+			<list-add-button title="添加序列选项" class="list_add_button" @click="addSequenceOption()" />
 		</div>
 		<div v-if="subpart.randomize">
 			<div class="subpart_option_head_bar">
-				<label class="descriptor_label">Randomize</label>
+				<label class="descriptor_label">随机</label>
 			</div>
 			<ul class="nested_list sortable">
 				<li v-for="option in subpart.randomize" :key="option.uuid">
 					<div class="header_bar">
 						<GripHorizontal @mousedown="sortList(subpart.randomize, $event)" />
-						<label>Weight</label>
+						<label>权重</label>
 						<input type="number" min="0" v-model.number="option.weight" @input="modifyEvent">
 						<div class="fill_line" />
-						<div class="remove_button highlighting_button" title="Remove Option" @click="removeRandomizeOption(option)"><X /></div>
+						<div class="remove_button highlighting_button" title="移除选项" @click="removeRandomizeOption(option)"><X /></div>
 					</div>
 					<event-subpart :subpart="option" @modify_event="modifyEvent" />
 				</li>
 			</ul>
-			<list-add-button title="Add Random Option" class="list_add_button" @click="addRandomizeOption()" />
+			<list-add-button title="添加随机选项" class="list_add_button" @click="addRandomizeOption()" />
 		</div>
 		<ul v-if="subpart.particle_effect">
 			<div class="section_bar">
-				<label class="descriptor_label">Particle Effect</label>
-				<X :size="20" class="highlighting_button" title="Disable Particle Effect" @click="disableParticleSection()" />
+				<label class="descriptor_label">粒子效果</label>
+				<X :size="20" class="highlighting_button" title="停用粒子效果" @click="disableParticleSection()" />
 			</div>
 			<li class="input_wrapper">
-				<label>Identifier</label>
+				<label>标识符</label>
 				<prism-editor :highlight="highlightGeneric" language="" :line-numbers="false"
 					v-model="subpart.particle_effect.effect"
 					placeholder="space:name"
 					@input="modifyEvent($event, 'text')"
 				/>
-				<div class="highlighting_button" @click="$refs.new_particle_dialog.showModal(); new_particle_identifier = subpart.particle_effect.effect;" v-if="!is_extension && !canEditParticleFile()" title="Create New Particle"><FilePlus2 :size="22" /></div>
-				<div class="highlighting_button" @click="selectParticleFile()" v-if="!is_extension" title="Select File"><Upload :size="22" /></div>
-				<div class="highlighting_button" @click="selectParticleTexture()" v-if="!is_extension && canEditParticleFile()" title="Select Texture"><ImagePlus :size="22" /></div>
-				<div class="highlighting_button" @click="editParticleFile()" v-if="canEditParticleFile()" title="Edit Linked Particle Effect"><Pencil :size="22" /></div>
+				<div class="highlighting_button" @click="$refs.new_particle_dialog.showModal(); new_particle_identifier = subpart.particle_effect.effect;" v-if="!is_extension && !canEditParticleFile()" title="创建新粒子"><FilePlus2 :size="22" /></div>
+				<div class="highlighting_button" @click="selectParticleFile()" v-if="!is_extension" title="选择文件"><Upload :size="22" /></div>
+				<div class="highlighting_button" @click="selectParticleTexture()" v-if="!is_extension && canEditParticleFile()" title="选择纹理"><ImagePlus :size="22" /></div>
+				<div class="highlighting_button" @click="editParticleFile()" v-if="canEditParticleFile()" title="编辑关联粒子效果"><Pencil :size="22" /></div>
 
 				
 
 				<dialog id="new_particle_dialog" ref="new_particle_dialog" class="modal_dialog">
-					<div class="form_bar"><label>Identifier</label><input type="text" v-model="new_particle_identifier" placeholder="space:name"></div>
+					<div class="form_bar"><label>标识符</label><input type="text" v-model="new_particle_identifier" placeholder="space:name"></div>
 					<div class="button_bar">
-						<button @click="createNewParticleFile(new_particle_identifier)">Confirm</button>
-						<button @click="$refs.new_particle_dialog.close()">Cancel</button>
+						<button @click="createNewParticleFile(new_particle_identifier)">确定</button>
+						<button @click="$refs.new_particle_dialog.close()">取消</button>
 					</div>
 				</dialog>
 			</li>
 			<li class="input_wrapper">
-				<label>Type</label>
+				<label>类型</label>
 				<select v-model="subpart.particle_effect.type" @change="modifyEvent">
 					<option v-for="(s_label, s_key) in emitter_type_options" :key="s_key" :value="s_key" :id="s_key">{{ s_label }}</option>
 				</select>
 			</li>
 			<li class="input_wrapper">
-				<label>Expression</label>
+				<label>表达式</label>
 				<prism-editor :highlight="highlightMolang" language="" :line-numbers="false"
 					v-model="subpart.particle_effect.pre_effect_expression"
 					placeholder=""
@@ -80,11 +80,11 @@
 		</ul>
 		<ul v-if="subpart.sound_effect">
 			<div class="section_bar">
-				<label class="descriptor_label">Sound</label>
-				<X :size="20" class="highlighting_button" title="Disable Sound Effect" @click="disableSoundSection()" />
+				<label class="descriptor_label">声音</label>
+				<X :size="20" class="highlighting_button" title="停用声音效果" @click="disableSoundSection()" />
 			</div>
 			<li class="input_wrapper">
-				<label>Sound Event</label>
+				<label>声音事件</label>
 				<prism-editor :highlight="highlightGeneric" language="" :line-numbers="false"
 					v-model="subpart.sound_effect.event_name"
 					placeholder="block.bamboo.hit"
@@ -92,10 +92,10 @@
 				/>
 			</li>
 		</ul>
-		<ul v-if="typeof subpart.expression == 'string'" title="Run a Molang expression on the event firing emitter">
+		<ul v-if="typeof subpart.expression == 'string'" title="在触发事件的发射器上运行 Molang 表达式">
 			<div class="section_bar">
-				<label class="descriptor_label">Expression</label>
-				<X :size="20" class="highlighting_button" title="Disable Expression" @click="disableExpressionSection()" />
+				<label class="descriptor_label">表达式</label>
+				<X :size="20" class="highlighting_button" title="停用表达式" @click="disableExpressionSection()" />
 			</div>
 			<li class="input_wrapper">
 				<prism-editor :highlight="highlightMolang" language="" :line-numbers="false"
@@ -108,13 +108,13 @@
 		</ul>
 		<ul class="create_bar">
 			<template v-if="!subpart.sequence && !subpart.randomize">
-				<li v-if="!subpart.particle_effect" @click="createParticleSection();"><Plus :size="18" />Particle</li>
-				<li v-if="!subpart.sound_effect" @click="createSoundSection();"><Plus :size="18" />Sound</li>
-				<li v-if="!subpart.expression" @click="createExpressionSection();"><Plus :size="18" />Expression</li>
+				<li v-if="!subpart.particle_effect" @click="createParticleSection();"><Plus :size="18" />粒子</li>
+				<li v-if="!subpart.sound_effect" @click="createSoundSection();"><Plus :size="18" />声音</li>
+				<li v-if="!subpart.expression" @click="createExpressionSection();"><Plus :size="18" />表达式</li>
 			</template>
 			<template v-if="!subpart.particle_effect && !subpart.sound_effect && subpart.expression == undefined">
-				<li v-if="!subpart.sequence && !subpart.randomize" @click="createSequenceSection();"><Plus :size="18" />Sequence</li>
-				<li v-if="!subpart.sequence && !subpart.randomize" @click="createRandomizeSection();"><Plus :size="18" />Randomize</li>
+				<li v-if="!subpart.sequence && !subpart.randomize" @click="createSequenceSection();"><Plus :size="18" />序列</li>
+				<li v-if="!subpart.sequence && !subpart.randomize" @click="createRandomizeSection();"><Plus :size="18" />随机</li>
 			</template>
 		</ul>
 	</div>
