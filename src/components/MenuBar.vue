@@ -99,7 +99,7 @@ const Menu = [
 			{label: '教程视频', click: () => { openLink('https://youtu.be/J1Ub1tbO9gg') }},
 			{label: '格式文档', click: () => { openLink('https://docs.microsoft.com/en-us/minecraft/creator/reference/content/particlesreference/') }},
 			{label: 'Molang 绘图器', click: () => { openLink('https://jannisx11.github.io/molang-grapher/') }},
-			{label: '报告问题', click: () => { openLink('https://github.com/Dbackolds/stormdmc/issues') }},
+			{label: '报告问题', click: () => { openLink('https://github.com/GanquanOnline/Stormdmc/issues') }},
 			{label: 'Discord 服务器', click: () => { openLink('https://discord.gg/W9d78Z8AvM') }},
 		]
 	}

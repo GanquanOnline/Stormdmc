@@ -1,6 +1,6 @@
 {
 	"name": "snowstorm",
-	"version": "3.2.5",
+	"version": "3.2.6",
 	"description": "Minecraft Bedrock Edition particle editor",
 	"author": {
 		"name": "JannisX11",
@@ -8,7 +8,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Dbackolds/stormdmc.git"
+		"url": "https://github.com/GanquanOnline/Stormdmc.git"
 	},
 	"license": "GPL-3.0-or-later",
 	"scripts": {

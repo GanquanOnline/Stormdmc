@@ -3,7 +3,7 @@
 为 Minecraft 基岩版粒子文件提供自定义编辑器。文件名必须匹配
 `*.particle.json` 才会由 Snowstorm 打开。
 
-项目仓库：[Dbackolds/stormdmc](https://github.com/Dbackolds/stormdmc)
+项目仓库：[GanquanOnline/Stormdmc](https://github.com/GanquanOnline/Stormdmc)
 
 ## 使用方法
 
