@@ -82,7 +82,7 @@ class TextureClass {
         this.internal_changes = true;
         this.update();
     }
-    save() {
+    async save() {
         if (!this.source) return;
         if (vscode) {
             if (this.internal_changes) {
@@ -94,14 +94,16 @@ class TextureClass {
                 });
             }
         } else {
-            IO.export({
+            const result = await IO.export({
                 name: this.name || 'Texture',
                 extensions: ['png'],
                 savetype: 'image',
                 content: this.source
             })
+            if (result?.canceled) return result;
         }
         this.markAsSaved();
+        return {canceled: false};
     }
     markAsSaved() {
         this.internal_changes = false;

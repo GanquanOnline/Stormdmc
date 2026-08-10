@@ -2,6 +2,7 @@ import vscode from './vscode_extension'
 import {loadFromUrl} from './share'
 
 if (!vscode) {
+    if (!window.snowstormDesktop) {
     window.onbeforeunload = function() {
         return 'Your changes might not be saved';
     }
@@ -15,6 +16,7 @@ if (!vscode) {
 	}
     if ('serviceWorker' in navigator) {
         registerSW();
+    }
     }
 
     loadFromUrl()
