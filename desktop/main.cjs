@@ -1,11 +1,14 @@
-const {app, BrowserWindow, dialog, ipcMain, shell} = require('electron');
+const {app, BrowserWindow, clipboard, dialog, ipcMain, shell} = require('electron');
 const {spawn} = require('node:child_process');
+const fs = require('node:fs');
+const net = require('node:net');
 const path = require('node:path');
 const {pathToFileURL} = require('node:url');
 
 const DEFAULT_PORT = 43123;
 let mainWindow;
 let bridgeRuntime;
+let pendingDocumentPath;
 
 function valueAfter(flag) {
   const index = process.argv.indexOf(flag);
@@ -22,6 +25,10 @@ function getWorkspace() {
   return workspace ? path.resolve(workspace) : undefined;
 }
 
+function findParticleArgument(commandLine = process.argv) {
+  return commandLine.find(argument => /\.particle\.json$/i.test(argument) && fs.existsSync(argument));
+}
+
 function bundledPath(...parts) {
   return app.isPackaged
     ? path.join(process.resourcesPath, ...parts)
@@ -32,50 +39,45 @@ async function loadMcpModule() {
   return await import(pathToFileURL(bundledPath('mcp_server', 'dist', 'index.js')).href);
 }
 
-async function runRemoteMcp() {
-  try {
-    const {startRemoteMcp} = await loadMcpModule();
-    let runtime;
-    for (let attempt = 0; attempt < 2 && !runtime; attempt++) {
-      try {
-        runtime = await startRemoteMcp({workspace: getWorkspace(), port: getPort(), connectTimeout: 800});
-      } catch (error) {
-        if (attempt > 0) throw error;
-        launchDesktopEditor();
-        for (let wait = 0; wait < 30 && !runtime; wait++) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          try {
-            runtime = await startRemoteMcp({workspace: getWorkspace(), port: getPort(), connectTimeout: 800});
-          } catch {}
-        }
-      }
-    }
-    const shutdown = async () => {
-      await runtime.close();
-      app.quit();
-    };
-    process.once('SIGINT', shutdown);
-    process.once('SIGTERM', shutdown);
-  } catch (error) {
-    console.error(error?.stack || error);
-    app.exit(1);
-  }
-}
-
-function launchDesktopEditor() {
-  const args = ['--snowstorm-editor'];
+function runMcpProcess() {
+  const args = [bundledPath('mcp_server', 'dist', 'desktop.js'), '--port', String(getPort())];
   const workspace = getWorkspace();
   if (workspace) args.push('--workspace', workspace);
-  if (app.isPackaged) {
-    spawn(process.execPath, args, {detached: true, stdio: 'ignore'}).unref();
-  } else {
-    spawn(process.execPath, [app.getAppPath(), ...args], {detached: true, stdio: 'ignore'}).unref();
-  }
+  const child = spawn(process.execPath, args, {
+    stdio: 'inherit',
+    windowsHide: true,
+    env: {...process.env, ELECTRON_RUN_AS_NODE: '1', SNOWSTORM_DESKTOP_EXE: process.execPath}
+  });
+  child.once('error', error => {
+    console.error(error?.stack || error);
+    process.exit(1);
+  });
+  child.once('exit', code => process.exit(code ?? 0));
 }
 
 async function startBridge() {
+  await assertPortAvailable(getPort());
   const {createBridge} = await loadMcpModule();
   bridgeRuntime = createBridge({workspace: getWorkspace(), port: getPort()});
+}
+
+async function assertPortAvailable(port) {
+  await new Promise((resolve, reject) => {
+    const server = net.createServer();
+    server.unref();
+    server.once('error', error => reject(new Error(`MCP Bridge 端口 ${port} 已被占用，请关闭其他 Snowstorm 或 MCP 服务后重试。\n\n${error.message}`)));
+    server.listen({host: '127.0.0.1', port}, () => server.close(resolve));
+  });
+}
+
+async function openParticleDocument(filePath) {
+  if (!filePath || !mainWindow || mainWindow.isDestroyed()) return;
+  try {
+    const particle = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    await mainWindow.webContents.executeJavaScript(`window.loadFileFromParentEffect(${JSON.stringify(JSON.stringify(particle))}, null)`);
+  } catch (error) {
+    dialog.showErrorBox('无法打开粒子文件', error?.message || String(error));
+  }
 }
 
 function createWindow() {
@@ -91,10 +93,18 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false
+      sandbox: false,
+      additionalArguments: [`--snowstorm-port=${getPort()}`]
     }
   });
   mainWindow.once('ready-to-show', () => mainWindow.show());
+  mainWindow.webContents.once('did-finish-load', () => {
+    if (pendingDocumentPath) {
+      const filePath = pendingDocumentPath;
+      pendingDocumentPath = undefined;
+      void openParticleDocument(filePath);
+    }
+  });
   mainWindow.webContents.setWindowOpenHandler(({url}) => {
     if (/^https?:/i.test(url)) shell.openExternal(url);
     return {action: 'deny'};
@@ -108,6 +118,23 @@ ipcMain.handle('snowstorm:info', () => ({
   workspace: getWorkspace() || null,
   port: getPort()
 }));
+
+ipcMain.handle('snowstorm:copy-mcp-config', () => {
+  const args = app.isPackaged ? ['--mcp'] : [app.getAppPath(), '--mcp'];
+  args.push('--port', String(getPort()));
+  const workspace = getWorkspace();
+  if (workspace) args.push('--workspace', workspace);
+  const config = {
+    mcpServers: {
+      snowstorm: {
+        command: process.execPath,
+        args
+      }
+    }
+  };
+  clipboard.writeText(JSON.stringify(config, null, 2));
+  return config;
+});
 
 ipcMain.handle('snowstorm:save-file', async (_event, payload = {}) => {
   const name = String(payload.name || 'snowstorm-export');
@@ -129,16 +156,30 @@ ipcMain.handle('snowstorm:save-file', async (_event, payload = {}) => {
 
 const isMcp = process.argv.includes('--mcp');
 if (isMcp) {
-  app.whenReady().then(runRemoteMcp);
+  runMcpProcess();
 } else {
-  app.whenReady().then(async () => {
-    try {
-      await startBridge();
-      createWindow();
-    } catch (error) {
-      dialog.showErrorBox('Snowstorm 启动失败', error?.message || String(error));
-      app.quit();
-    }
-  });
-  app.on('window-all-closed', () => app.quit());
+  const hasLock = app.requestSingleInstanceLock();
+  if (!hasLock) {
+    app.quit();
+  } else {
+    pendingDocumentPath = findParticleArgument();
+    app.on('second-instance', (_event, commandLine) => {
+      const filePath = findParticleArgument(commandLine);
+      if (filePath) void openParticleDocument(filePath);
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+      }
+    });
+    app.whenReady().then(async () => {
+      try {
+        await startBridge();
+        createWindow();
+      } catch (error) {
+        dialog.showErrorBox('Snowstorm 启动失败', error?.message || String(error));
+        app.quit();
+      }
+    });
+    app.on('window-all-closed', () => app.quit());
+  }
 }

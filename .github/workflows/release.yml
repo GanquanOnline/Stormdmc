@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要发布的版本标签，例如 v3.2.3'
+        description: '要发布的版本标签，例如 v3.2.4'
         required: true
         type: string
 
@@ -15,8 +15,8 @@ permissions:
   contents: write
 
 jobs:
-  release:
-    name: 构建、测试并发布
+  validate:
+    name: 构建与测试
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
@@ -25,7 +25,7 @@ jobs:
       - name: 设置 Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: |
             package-lock.json
@@ -45,6 +45,65 @@ jobs:
 
       - name: 运行 MCP 测试
         run: npm run mcp:test
+
+      - name: 上传 MCP 构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: stormdmc-mcp-dist
+          path: mcp_server/dist
+          if-no-files-found: error
+
+  desktop:
+    name: 构建 Windows 安装包
+    runs-on: windows-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            mcp_server/package-lock.json
+
+      - name: 安装根项目依赖
+        run: npm ci
+
+      - name: 安装 MCP 依赖
+        run: npm ci --prefix mcp_server
+
+      - name: 构建 Windows 安装包
+        run: npm run desktop:build
+
+      - name: 上传 Windows 安装包
+        uses: actions/upload-artifact@v4
+        with:
+          name: stormdmc-windows-installer
+          path: release/*.exe
+          if-no-files-found: error
+
+  release:
+    name: 发布 GitHub Release
+    needs: [validate, desktop]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 下载 Windows 安装包
+        uses: actions/download-artifact@v4
+        with:
+          name: stormdmc-windows-installer
+          path: release
+
+      - name: 下载 MCP 构建产物
+        uses: actions/download-artifact@v4
+        with:
+          name: stormdmc-mcp-dist
+          path: mcp_server/dist
 
       - name: 打包发布附件
         shell: bash
@@ -76,6 +135,7 @@ jobs:
 
             - 更新 Snowstorm 主项目与 VS Code 扩展补丁版本。
             - 集成 MCP 本地服务、浏览器桥接、AI 修改审批、预览截图和工作区原子保存能力。
+            - 增加 Windows EXE、`.particle.json` 文件关联、单实例启动和桌面端复制 MCP 配置。
             - 更新中文 README、MCP 使用指南和 GitHub Wiki。
             - 增加自动构建、测试与 Release 发布工作流。
           files: release/*

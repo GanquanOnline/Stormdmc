@@ -1,6 +1,6 @@
 {
 	"name": "snowstorm",
-	"version": "3.2.3",
+	"version": "3.2.4",
 	"description": "Minecraft Bedrock Edition particle editor",
 	"author": {
 		"name": "JannisX11",
@@ -63,6 +63,7 @@
 	"build": {
 		"appId": "com.snowstorm.particle-editor",
 		"productName": "Snowstorm",
+		"electronDist": "node_modules/electron/dist",
 		"artifactName": "Snowstorm-${version}-Setup.${ext}",
 		"directories": {"output": "release"},
 		"files": [
@@ -80,9 +81,12 @@
 			{"from": "mcp_server/dist", "to": "mcp_server/dist"},
 			{"from": "mcp_server/node_modules", "to": "mcp_server/node_modules"}
 		],
+		"fileAssociations": [
+			{"ext": "particle.json", "name": "Minecraft Bedrock Particle", "description": "Snowstorm 粒子文件", "role": "Editor"}
+		],
 		"win": {
 			"target": [{"target": "nsis", "arch": ["x64"]}],
-			"icon": "favicon.ico"
+			"icon": "icon.png"
 		},
 		"nsis": {
 			"oneClick": false,

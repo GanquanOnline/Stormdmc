@@ -39,6 +39,7 @@ import { generateFile } from '../export'
 import { Texture } from '../texture_edit'
 import { Options, OptionValues, setOption } from '../options'
 const isVSCExtension = !!vscode;
+const isDesktop = !!window.snowstormDesktop;
 
 function openLink(link) {
 	if (vscode) {
@@ -109,6 +110,16 @@ if (!isVSCExtension) {
 		{label: '导入', click: () => {importFile()}},
 		{label: '下载', click: () => {downloadFile()}}
 	)
+}
+
+if (isDesktop) {
+	Menu.find(menu => menu.label === '帮助').children.unshift({
+		label: '复制 MCP 配置',
+		click: async () => {
+			await window.snowstormDesktop.copyMcpConfig();
+			alert('MCP 配置已复制到剪贴板');
+		}
+	});
 }
 
 

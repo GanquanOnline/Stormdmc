@@ -58,7 +58,7 @@ function validateTextureTarget(workspace: Workspace | undefined, texturePath?: s
 
 export function createMcpServer(bridge: McpBridge, workspace?: Workspace): McpServer {
   const server = new McpServer(
-    { name: 'snowstorm-mcp', version: '0.1.1' },
+    { name: 'snowstorm-mcp', version: '0.1.2' },
     { capabilities: { tools: {}, resources: {}, prompts: {} } }
   );
 

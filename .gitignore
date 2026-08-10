@@ -9,6 +9,7 @@ dist/images/
 mcp_server/dist/
 output/
 release/
+release-*/
 release-exe/
 release-local/
 
