@@ -10,6 +10,7 @@ mcp_server/dist/
 output/
 release/
 release-exe/
+release-local/
 
 # 与项目无关的本地目录/文件
 target/
