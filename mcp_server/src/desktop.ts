@@ -36,10 +36,9 @@ async function connect() {
     return await startRemoteMcp({...options, connectTimeout: 800});
   } catch {
     const {bridge} = createBridge(options);
-    const runtime = startMcp(options, bridge);
     launchEditor();
     await waitForEditor(bridge);
-    return runtime;
+    return startMcp(options, bridge);
   }
 }
 

@@ -29,7 +29,7 @@
 		"desktop:prepare": "npm run production && npm --prefix mcp_server run build",
 		"desktop:dev": "npm run desktop:prepare && electron . --snowstorm-editor",
 		"desktop:pack": "npm run desktop:prepare && electron-builder --dir",
-		"desktop:build": "npm run desktop:prepare && electron-builder --win nsis"
+		"desktop:build": "npm run desktop:prepare && electron-builder --win nsis --publish never"
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
@@ -63,7 +63,6 @@
 	"build": {
 		"appId": "com.snowstorm.particle-editor",
 		"productName": "Snowstorm",
-		"electronDist": "node_modules/electron/dist",
 		"artifactName": "Snowstorm-${version}-Setup.${ext}",
 		"directories": {"output": "release"},
 		"files": [
@@ -79,6 +78,7 @@
 		],
 		"extraResources": [
 			{"from": "mcp_server/dist", "to": "mcp_server/dist"},
+			{"from": "mcp_server/package.json", "to": "mcp_server/package.json"},
 			{"from": "mcp_server/node_modules", "to": "mcp_server/node_modules"}
 		],
 		"fileAssociations": [
