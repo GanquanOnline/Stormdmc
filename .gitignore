@@ -8,6 +8,7 @@ dist/plain-report.txt
 dist/images/
 mcp_server/dist/
 output/
+release/
 
 # 与项目无关的本地目录/文件
 target/
