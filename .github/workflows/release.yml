@@ -55,7 +55,8 @@ jobs:
           git archive --format=zip --output="release/stormdmc-${tag}.zip" HEAD
           tar -czf "release/stormdmc-${tag}.tar.gz" \
             --exclude='./.git' --exclude='./node_modules' --exclude='./mcp_server/node_modules' \
-            --exclude='./mcp_server/dist' --exclude='./output' --exclude='./.playwright-cli' .
+            --exclude='./mcp_server/dist' --exclude='./output' --exclude='./.playwright-cli' \
+            --exclude='./release' .
           mkdir -p "release/stormdmc-mcp-${tag}"
           cp -R mcp_server/dist "release/stormdmc-mcp-${tag}/dist"
           cp mcp_server/package.json mcp_server/package-lock.json mcp_server/README.md "release/stormdmc-mcp-${tag}/"
