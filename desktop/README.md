@@ -14,7 +14,7 @@ npm run desktop:build
 
 安装包输出到 `release/`。普通用户双击 Snowstorm 即可打开编辑器；导出 JSON 或 PNG 时会出现 Windows 原生保存对话框。
 
-安装程序会注册 `.particle.json` 文件关联；双击粒子文件会复用已打开的 Snowstorm 窗口，或启动新窗口后载入文件。若 MCP 端口被占用，启动时会显示明确的端口提示。
+安装程序会注册 `.particle.json` 文件关联；双击粒子文件会复用已打开的 Snowstorm 窗口，或启动新窗口后载入文件。若 MCP 端口被占用，启动时会列出占用进程、PID 和程序路径，由用户确认是否结束该进程并继续；选择取消时不会强制关闭其他程序。
 
 ## MCP 配置
 

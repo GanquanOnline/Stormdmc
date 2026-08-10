@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要发布的版本标签，例如 v3.2.4'
+        description: '要发布的版本标签，例如 v3.2.5'
         required: true
         type: string
 
@@ -136,6 +136,7 @@ jobs:
             - 更新 Snowstorm 主项目与 VS Code 扩展补丁版本。
             - 集成 MCP 本地服务、浏览器桥接、AI 修改审批、预览截图和工作区原子保存能力。
             - 增加 Windows EXE、`.particle.json` 文件关联、单实例启动和桌面端复制 MCP 配置。
+            - Windows 桌面版可识别 MCP 端口占用进程，并在用户确认后解除占用继续启动。
             - 更新中文 README、MCP 使用指南和 GitHub Wiki。
             - 增加自动构建、测试与 Release 发布工作流。
           files: release/*

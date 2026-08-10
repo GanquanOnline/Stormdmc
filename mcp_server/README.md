@@ -14,7 +14,7 @@ AI 的修改只会先应用到浏览器内存中的当前文档。页面弹出�
 - 一个通过 HTTP 提供 Snowstorm 网页的本地静态服务器。
 - 兼容 MCP 的客户端，例如支持 stdio MCP 配置的桌面 AI 工具。
 
-如果使用 Windows 桌面版 Snowstorm，则不需要单独安装 Node.js。安装 `Snowstorm-3.2.4-Setup.exe` 后，在“帮助”菜单选择“复制 MCP 配置”，把剪贴板中的 JSON 粘贴到 MCP 客户端即可。桌面版会自动启动本地桥接和编辑器；若编辑器尚未打开，`--mcp` 模式会自动拉起它。
+如果使用 Windows 桌面版 Snowstorm，则不需要单独安装 Node.js。安装 `Snowstorm-3.2.5-Setup.exe` 后，在“帮助”菜单选择“复制 MCP 配置”，把剪贴板中的 JSON 粘贴到 MCP 客户端即可。桌面版会自动启动本地桥接和编辑器；若编辑器尚未打开，`--mcp` 模式会自动拉起它。
 
 ## 安装与启动
 
@@ -137,6 +137,9 @@ npm run mcp:start -- --workspace D:\\MyBedrockPack
 
 确认 MCP 服务正在运行、网页是通过 HTTP 服务打开的，并检查端口是否被占用。页面和服务
 必须使用相同端口；修改端口后请同时设置 `SNOWSTORM_MCP_PORT` 或 `--port`。
+
+Windows 桌面版检测到端口占用时，会显示占用进程、PID 和程序路径。确认后 Snowstorm 才会
+结束占用进程并继续启动；不确定进程用途时请选择取消，并改用 `--port <其他端口>`。
 
 **为什么工具返回 `WORKSPACE_UNAVAILABLE`？**
 

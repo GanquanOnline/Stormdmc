@@ -16,7 +16,7 @@ StormDMC Snowstorm 是面向 Minecraft 基岩版的粒子效果编辑器，支�
 
 ### Windows EXE
 
-安装 `Snowstorm-3.2.4-Setup.exe` 后可直接从桌面或开始菜单启动，无需安装 Node.js。文件菜单支持导入和原生另存为，也支持通过“打开方式”或命令行参数打开 `.particle.json`。
+安装 `Snowstorm-3.2.5-Setup.exe` 后可直接从桌面或开始菜单启动，无需安装 Node.js。文件菜单支持导入和原生另存为，也支持通过“打开方式”或命令行参数打开 `.particle.json`。
 
 在 Snowstorm 的“帮助”菜单点击“复制 MCP 配置”，即可将当前安装路径对应的配置复制到剪贴板。AI 客户端启动同一个 EXE 的 `--mcp` 模式；编辑器未打开时会自动启动。
 
@@ -82,7 +82,7 @@ npm run mcp:e2e     # MCP 端到端测试
 ```
 
 提交 `v*` 格式的标签后，GitHub Actions 会自动执行构建与测试，并创建带中文更新说明
-的 GitHub Release。版本号遵循语义化版本；本次版本为 `3.2.4`，MCP 子包为 `0.1.2`。
+的 GitHub Release。版本号遵循语义化版本；本次版本为 `3.2.5`，MCP 子包为 `0.1.2`。
 
 ## 许可证
 
