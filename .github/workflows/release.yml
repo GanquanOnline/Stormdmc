@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要发布的版本标签，例如 v3.2.6'
+        description: '要发布的版本标签，例如 v3.2.7'
         required: true
         type: string
 
@@ -46,16 +46,32 @@ jobs:
       - name: 运行 MCP 测试
         run: npm run mcp:test
 
-      - name: 上传 MCP 构建产物
-        uses: actions/upload-artifact@v4
-        with:
-          name: stormdmc-mcp-dist
-          path: mcp_server/dist
-          if-no-files-found: error
-
   desktop:
-    name: 构建 Windows 安装包
-    runs-on: windows-latest
+    name: 构建 ${{ matrix.name }} 客户端
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Windows
+            os: windows-latest
+            build_command: npm run desktop:build:win
+            artifact_glob: release/*.exe
+            artifact_name: stormdmc-windows-client
+          - name: Linux
+            os: ubuntu-latest
+            build_command: npm run desktop:build:linux
+            artifact_glob: |
+              release/*.AppImage
+              release/*.deb
+            artifact_name: stormdmc-linux-client
+          - name: macOS
+            os: macos-latest
+            build_command: npm run desktop:build:mac
+            artifact_glob: |
+              release/*.dmg
+              release/*.zip
+            artifact_name: stormdmc-macos-client
     steps:
       - name: 检出代码
         uses: actions/checkout@v4
@@ -75,14 +91,14 @@ jobs:
       - name: 安装 MCP 依赖
         run: npm ci --prefix mcp_server
 
-      - name: 构建 Windows 安装包
-        run: npm run desktop:build
+      - name: 构建客户端
+        run: ${{ matrix.build_command }}
 
-      - name: 上传 Windows 安装包
+      - name: 上传客户端
         uses: actions/upload-artifact@v4
         with:
-          name: stormdmc-windows-installer
-          path: release/*.exe
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.artifact_glob }}
           if-no-files-found: error
 
   release:
@@ -93,36 +109,23 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v4
 
-      - name: 下载 Windows 安装包
+      - name: 下载 Windows 客户端
         uses: actions/download-artifact@v4
         with:
-          name: stormdmc-windows-installer
+          name: stormdmc-windows-client
           path: release
 
-      - name: 下载 MCP 构建产物
+      - name: 下载 Linux 客户端
         uses: actions/download-artifact@v4
         with:
-          name: stormdmc-mcp-dist
-          path: mcp_server/dist
+          name: stormdmc-linux-client
+          path: release
 
-      - name: 打包发布附件
-        shell: bash
-        run: |
-          tag="${GITHUB_REF_NAME}"
-          if [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then tag="${{ inputs.tag }}"; fi
-          mkdir -p release
-          git archive --format=zip --output="release/stormdmc-${tag}.zip" HEAD
-          tar -czf "release/stormdmc-${tag}.tar.gz" \
-            --exclude='./.git' --exclude='./node_modules' --exclude='./mcp_server/node_modules' \
-            --exclude='./mcp_server/dist' --exclude='./output' --exclude='./.playwright-cli' \
-            --exclude='./release' .
-          mkdir -p "release/stormdmc-mcp-${tag}"
-          cp -R mcp_server/dist "release/stormdmc-mcp-${tag}/dist"
-          cp mcp_server/package.json mcp_server/package-lock.json mcp_server/README.md "release/stormdmc-mcp-${tag}/"
-          tar -czf "release/stormdmc-mcp-${tag}.tar.gz" -C release "stormdmc-mcp-${tag}"
-          rm -rf "release/stormdmc-mcp-${tag}"
-          cp package.json release/stormdmc-package.json
-          cp mcp_server/package.json release/stormdmc-mcp-package.json
+      - name: 下载 macOS 客户端
+        uses: actions/download-artifact@v4
+        with:
+          name: stormdmc-macos-client
+          path: release
 
       - name: 创建 Release
         uses: softprops/action-gh-release@v2
@@ -135,8 +138,8 @@ jobs:
 
             - 更新 Snowstorm 主项目与 VS Code 扩展补丁版本。
             - 集成 MCP 本地服务、浏览器桥接、AI 修改审批、预览截图和工作区原子保存能力。
-            - 增加 Windows EXE、`.particle.json` 文件关联、单实例启动和桌面端复制 MCP 配置。
-            - Windows 桌面版可识别 MCP 端口占用进程，并在用户确认后解除占用继续启动。
+            - 增加 Windows、Linux、macOS 三平台桌面客户端、`.particle.json` 文件关联、单实例启动和桌面端复制 MCP 配置。
+            - 桌面版可识别 MCP 端口占用进程，并在用户确认后解除占用继续启动。
             - 项目仓库、问题反馈、扩展元数据和 Wiki 链接已迁移到 GanquanOnline/Stormdmc。
             - 更新中文 README、MCP 使用指南和 GitHub Wiki。
             - 增加自动构建、测试与 Release 发布工作流。

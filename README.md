@@ -14,11 +14,11 @@ StormDMC Snowstorm 是面向 Minecraft 基岩版的粒子效果编辑器，支�
 
 ## 快速开始
 
-### Windows EXE
+### 桌面客户端（Windows、Linux、macOS）
 
-安装 `Snowstorm-3.2.6-Setup.exe` 后可直接从桌面或开始菜单启动，无需安装 Node.js。文件菜单支持导入和原生另存为，也支持通过“打开方式”或命令行参数打开 `.particle.json`。
+发布包提供 Windows、Linux、macOS 三个平台的客户端。Windows 使用 NSIS 安装程序，Linux 提供 AppImage/deb，macOS 提供 dmg/zip；安装客户端后无需安装 Node.js。文件菜单支持导入和原生另存为，也支持通过“打开方式”或命令行参数打开 `.particle.json`。
 
-在 Snowstorm 的“帮助”菜单点击“复制 MCP 配置”，即可将当前安装路径对应的配置复制到剪贴板。AI 客户端启动同一个 EXE 的 `--mcp` 模式；编辑器未打开时会自动启动。
+在 Snowstorm 的“帮助”菜单点击“复制 MCP 配置”，即可将当前安装路径对应的配置复制到剪贴板。AI 客户端启动同一个桌面客户端的 `--mcp` 模式；编辑器未打开时会自动启动。
 
 开发者可通过以下命令生成安装包：
 
@@ -26,7 +26,7 @@ StormDMC Snowstorm 是面向 Minecraft 基岩版的粒子效果编辑器，支�
 npm run desktop:build
 ```
 
-安装包输出到 `release/`。
+该命令生成当前操作系统的客户端并输出到 `release/`。发布工作流会分别在 Windows、Linux、macOS runner 上构建三种客户端。
 
 ### 网页版
 
@@ -82,7 +82,7 @@ npm run mcp:e2e     # MCP 端到端测试
 ```
 
 提交 `v*` 格式的标签后，GitHub Actions 会自动执行构建与测试，并创建带中文更新说明
-的 GitHub Release。版本号遵循语义化版本；本次版本为 `3.2.6`，MCP 子包为 `0.1.2`。
+的 GitHub Release。版本号遵循语义化版本；本次版本为 `3.2.7`，MCP 子包为 `0.1.2`。
 
 ## 许可证
 

@@ -38,6 +38,13 @@ function bundledPath(...parts) {
     : path.join(__dirname, '..', ...parts);
 }
 
+function desktopExecutablePath() {
+  if (process.platform === 'linux' && process.env.APPIMAGE) {
+    return path.resolve(process.env.APPIMAGE);
+  }
+  return process.execPath;
+}
+
 async function loadMcpModule() {
   return await import(pathToFileURL(bundledPath('mcp_server', 'dist', 'index.js')).href);
 }
@@ -49,7 +56,7 @@ function runMcpProcess() {
   const child = spawn(process.execPath, args, {
     stdio: 'inherit',
     windowsHide: true,
-    env: {...process.env, ELECTRON_RUN_AS_NODE: '1', SNOWSTORM_DESKTOP_EXE: process.execPath}
+    env: {...process.env, ELECTRON_RUN_AS_NODE: '1', SNOWSTORM_DESKTOP_EXE: desktopExecutablePath()}
   });
   child.once('error', error => {
     console.error(error?.stack || error);
@@ -89,7 +96,7 @@ async function assertPortAvailable(port) {
 }
 
 async function findPortOccupants(port) {
-  if (process.platform !== 'win32') return [];
+  if (process.platform !== 'win32') return findPosixPortOccupants(port);
   const command = [
     '$ErrorActionPreference = "Stop";',
     `$connections = Get-NetTCPConnection -LocalPort ${port} -State Listen -ErrorAction SilentlyContinue;`,
@@ -126,6 +133,46 @@ async function findPortOccupants(port) {
   }
 }
 
+async function findPosixPortOccupants(port) {
+  try {
+    const {stdout} = await execFileAsync('lsof', [
+      '-nP',
+      `-iTCP:${port}`,
+      '-sTCP:LISTEN',
+      '-Fpc'
+    ], {maxBuffer: 1024 * 1024});
+    const occupants = [];
+    let current;
+    for (const line of String(stdout || '').split(/\r?\n/)) {
+      if (line.startsWith('p')) {
+        if (current) occupants.push(current);
+        current = {pid: Number(line.slice(1)), name: '', path: '', commandLine: ''};
+      } else if (line.startsWith('c') && current) {
+        current.name = line.slice(1).trim();
+      }
+    }
+    if (current) occupants.push(current);
+
+    return await Promise.all(occupants
+      .filter(entry => Number.isInteger(entry.pid) && entry.pid > 0)
+      .map(async entry => {
+        try {
+          const [{stdout: executablePath}, {stdout: commandLine}] = await Promise.all([
+            execFileAsync('ps', ['-p', String(entry.pid), '-o', 'comm='], {maxBuffer: 1024 * 1024}),
+            execFileAsync('ps', ['-p', String(entry.pid), '-o', 'command='], {maxBuffer: 1024 * 1024})
+          ]);
+          entry.path = String(executablePath || '').trim();
+          entry.commandLine = String(commandLine || '').trim();
+        } catch {
+          // The process may exit while its details are being collected.
+        }
+        return entry;
+      }));
+  } catch {
+    return [];
+  }
+}
+
 function formatPortOccupants(occupants) {
   return occupants.map(({pid, name, path: executablePath}) => {
     const processName = name || '未知进程';
@@ -138,6 +185,14 @@ async function terminatePortOccupant(occupant) {
   const pid = Number(occupant?.pid);
   if (!Number.isInteger(pid) || pid <= 0 || pid === process.pid) {
     throw new Error('无法安全结束端口占用进程。');
+  }
+  if (process.platform !== 'win32') {
+    try {
+      process.kill(pid, 'SIGTERM');
+      return;
+    } catch (error) {
+      throw new Error(`无法结束端口占用进程（PID ${pid}）。\n\n${error?.message || error}`);
+    }
   }
   try {
     await execFileAsync('taskkill.exe', ['/PID', String(pid), '/T', '/F'], {
@@ -256,7 +311,7 @@ ipcMain.handle('snowstorm:copy-mcp-config', () => {
   const config = {
     mcpServers: {
       snowstorm: {
-        command: process.execPath,
+        command: desktopExecutablePath(),
         args
       }
     }
@@ -301,6 +356,11 @@ if (isMcp) {
         mainWindow.focus();
       }
     });
+    app.on('open-file', (event, filePath) => {
+      event.preventDefault();
+      if (mainWindow) void openParticleDocument(filePath);
+      else pendingDocumentPath = filePath;
+    });
     app.whenReady().then(async () => {
       try {
         if (!usesExternalBridge) await startBridge();
@@ -314,6 +374,11 @@ if (isMcp) {
         app.quit();
       }
     });
-    app.on('window-all-closed', () => app.quit());
+    app.on('activate', () => {
+      if (!mainWindow) createWindow();
+    });
+    app.on('window-all-closed', () => {
+      if (process.platform !== 'darwin') app.quit();
+    });
   }
 }

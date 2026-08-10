@@ -1,6 +1,6 @@
 {
 	"name": "snowstorm",
-	"version": "3.2.6",
+	"version": "3.2.7",
 	"description": "Minecraft Bedrock Edition particle editor",
 	"author": {
 		"name": "JannisX11",
@@ -29,7 +29,10 @@
 		"desktop:prepare": "npm run production && npm --prefix mcp_server run build",
 		"desktop:dev": "npm run desktop:prepare && electron . --snowstorm-editor",
 		"desktop:pack": "npm run desktop:prepare && electron-builder --dir",
-		"desktop:build": "npm run desktop:prepare && electron-builder --win nsis --publish never"
+		"desktop:build": "npm run desktop:prepare && electron-builder --publish never",
+		"desktop:build:win": "npm run desktop:prepare && electron-builder --win --publish never",
+		"desktop:build:linux": "npm run desktop:prepare && electron-builder --linux --publish never",
+		"desktop:build:mac": "npm run desktop:prepare && electron-builder --mac --publish never"
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
@@ -63,7 +66,7 @@
 	"build": {
 		"appId": "com.snowstorm.particle-editor",
 		"productName": "Snowstorm",
-		"artifactName": "Snowstorm-${version}-Setup.${ext}",
+		"artifactName": "Snowstorm-${version}-${os}-${arch}.${ext}",
 		"directories": {"output": "release"},
 		"files": [
 			"desktop/**/*",
@@ -86,7 +89,27 @@
 		],
 		"win": {
 			"target": [{"target": "nsis", "arch": ["x64"]}],
+			"artifactName": "Snowstorm-${version}-Windows-${arch}.${ext}",
 			"icon": "icon.png"
+		},
+		"mac": {
+			"target": [
+				{"target": "dmg", "arch": ["x64", "arm64"]},
+				{"target": "zip", "arch": ["x64", "arm64"]}
+			],
+			"artifactName": "Snowstorm-${version}-macOS-${arch}.${ext}",
+			"icon": "icon_full.png",
+			"category": "public.app-category.developer-tools"
+		},
+		"linux": {
+			"target": [
+				{"target": "AppImage", "arch": ["x64"]},
+				{"target": "deb", "arch": ["x64"]}
+			],
+			"artifactName": "Snowstorm-${version}-Linux-${arch}.${ext}",
+			"icon": "icon_full.png",
+			"category": "Development",
+			"synopsis": "Minecraft Bedrock Edition particle editor"
 		},
 		"nsis": {
 			"oneClick": false,
