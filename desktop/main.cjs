@@ -155,6 +155,7 @@ ipcMain.handle('snowstorm:save-file', async (_event, payload = {}) => {
 });
 
 const isMcp = process.argv.includes('--mcp');
+const usesExternalBridge = process.argv.includes('--bridge-client');
 if (isMcp) {
   runMcpProcess();
 } else {
@@ -173,7 +174,7 @@ if (isMcp) {
     });
     app.whenReady().then(async () => {
       try {
-        await startBridge();
+        if (!usesExternalBridge) await startBridge();
         createWindow();
       } catch (error) {
         dialog.showErrorBox('Snowstorm 启动失败', error?.message || String(error));
