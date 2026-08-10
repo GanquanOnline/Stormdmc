@@ -62,7 +62,8 @@ jobs:
           cp mcp_server/package.json mcp_server/package-lock.json mcp_server/README.md "release/stormdmc-mcp-${tag}/"
           tar -czf "release/stormdmc-mcp-${tag}.tar.gz" -C release "stormdmc-mcp-${tag}"
           rm -rf "release/stormdmc-mcp-${tag}"
-          cp package.json mcp_server/package.json release/
+          cp package.json release/stormdmc-package.json
+          cp mcp_server/package.json release/stormdmc-mcp-package.json
 
       - name: 创建 Release
         uses: softprops/action-gh-release@v2
