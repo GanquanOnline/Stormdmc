@@ -12,6 +12,10 @@ release/
 release-*/
 release-exe/
 release-local/
+android-web/
+android/.gradle/
+android/local.properties
+android/app/build/
 
 # 与项目无关的本地目录/文件
 target/

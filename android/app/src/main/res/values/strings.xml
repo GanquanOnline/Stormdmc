@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Snowstorm</string>
+    <string name="title_activity_main">Snowstorm</string>
+    <string name="package_name">com.ganquanonline.snowstorm</string>
+    <string name="custom_url_scheme">com.ganquanonline.snowstorm</string>
+</resources>

@@ -2,7 +2,7 @@ import vscode from './vscode_extension'
 import {loadFromUrl} from './share'
 
 if (!vscode) {
-    if (!window.snowstormDesktop) {
+    if (!window.snowstormDesktop && !window.snowstormMobile?.isMobile) {
     window.onbeforeunload = function() {
         return 'Your changes might not be saved';
     }

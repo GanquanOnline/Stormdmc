@@ -8,7 +8,25 @@ import Data from './input_structure'
  * @param {Uint8Array} texture 
  */
 export async function shareParticle(particle, texture) {
-    const url = new URL(window.location.href)
+	if (window.snowstormMobile && window.snowstormMobile.isMobile && typeof window.snowstormMobile.shareFiles === 'function') {
+		const files = [{
+			name: 'snowstorm.particle.json',
+			content: JSON.stringify(particle),
+			binary: false
+		}]
+		if (texture !== null) {
+			let binary = ''
+			for (const byte of texture) binary += String.fromCharCode(byte)
+			files.push({
+				name: 'snowstorm.png',
+				content: `data:image/png;base64,${btoa(binary)}`,
+				binary: true
+			})
+		}
+		await window.snowstormMobile.shareFiles(files).catch(() => {})
+		return
+	}
+	const url = new URL(window.location.href)
 
     url.searchParams.set(
         'loadParticle',

@@ -118,7 +118,7 @@ export default {
 		agent_runtime: null,
 	}},
 	mounted() {
-		if (!vscode) {
+		if (!vscode && !window.snowstormMobile?.isMobile) {
 			this.agent_runtime = createAgentRuntime(this);
 			this.agent_runtime.start();
 			window.SnowstormAgent = this.agent_runtime;

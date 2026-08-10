@@ -14,7 +14,7 @@ AI 的修改只会先应用到浏览器内存中的当前文档。页面弹出�
 - 一个通过 HTTP 提供 Snowstorm 网页的本地静态服务器。
 - 兼容 MCP 的客户端，例如支持 stdio MCP 配置的桌面 AI 工具。
 
-如果使用 Snowstorm 3.2.7 桌面客户端，则不需要单独安装 Node.js。安装对应平台的客户端后，在“帮助”菜单选择“复制 MCP 配置”，把剪贴板中的 JSON 粘贴到 MCP 客户端即可。桌面版会自动启动本地桥接和编辑器；若编辑器尚未打开，`--mcp` 模式会自动拉起它。Windows 提供 NSIS 安装程序，Linux 提供 AppImage/deb，macOS 提供 dmg/zip。
+如果使用 Snowstorm 3.2.8 桌面客户端，则不需要单独安装 Node.js。安装对应平台的客户端后，在“帮助”菜单选择“复制 MCP 配置”，把剪贴板中的 JSON 粘贴到 MCP 客户端即可。桌面版会自动启动本地桥接和编辑器；若编辑器尚未打开，`--mcp` 模式会自动拉起它。Windows 提供 NSIS 安装程序，Linux 提供 AppImage/deb，macOS 提供 dmg/zip。Android 客户端当前仅提供编辑、打开、导出和分享能力，不启动 MCP 服务；需要 MCP 时请使用桌面客户端或在电脑上运行网页版与 MCP 服务。
 
 ## 安装与启动
 

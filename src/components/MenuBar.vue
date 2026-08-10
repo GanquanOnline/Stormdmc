@@ -48,7 +48,11 @@ function openLink(link) {
             link
         });
 	} else {
-		open(link)
+		if (window.snowstormMobile && window.snowstormMobile.isMobile) {
+			window.snowstormMobile.openExternal(link)
+		} else {
+			open(link)
+		}
 	}
 }
 
@@ -166,7 +170,7 @@ export default {
 	data() {return {
 		Menu,
 		isVSCExtension,
-		canShare: 'share' in navigator,
+		canShare: 'share' in navigator || !!window.snowstormMobile?.isMobile,
 	}}
 }
 </script>

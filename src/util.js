@@ -355,6 +355,16 @@ const IO = {
 				return result;
 			});
 		}
+		if (window.snowstormMobile && window.snowstormMobile.isMobile && typeof window.snowstormMobile.saveFile === 'function') {
+			return window.snowstormMobile.saveFile({
+				name: file_name,
+				content: options.content,
+				binary: options.savetype === 'image'
+			}).then(result => {
+				if (typeof cb === 'function') cb();
+				return result;
+			});
+		}
 
 		if (window.chooseFile) {}
 		if (options.custom_writer) {

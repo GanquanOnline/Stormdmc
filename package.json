@@ -1,6 +1,6 @@
 {
 	"name": "snowstorm",
-	"version": "3.2.7",
+	"version": "3.2.8",
 	"description": "Minecraft Bedrock Edition particle editor",
 	"author": {
 		"name": "JannisX11",
@@ -32,9 +32,15 @@
 		"desktop:build": "npm run desktop:prepare && electron-builder --publish never",
 		"desktop:build:win": "npm run desktop:prepare && electron-builder --win --publish never",
 		"desktop:build:linux": "npm run desktop:prepare && electron-builder --linux --publish never",
-		"desktop:build:mac": "npm run desktop:prepare && electron-builder --mac --publish never"
+		"desktop:build:mac": "npm run desktop:prepare && electron-builder --mac --publish never",
+		"android:web": "npm run production && node scripts/prepare-android.cjs",
+		"android:sync": "npm run android:web && cap sync android",
+		"android:open": "npm run android:sync && cap open android",
+		"android:build:apk": "npm run android:sync && node scripts/build-android.cjs assembleDebug",
+		"android:build:aab": "npm run android:sync && node scripts/build-android.cjs bundleRelease"
 	},
 	"devDependencies": {
+		"@capacitor/cli": "^8.5.0",
 		"cross-env": "^7.0.3",
 		"electron": "^43.3.0",
 		"electron-builder": "^26.15.3",
@@ -50,6 +56,12 @@
 		"webpack-dev-server": "^5.0.2"
 	},
 	"dependencies": {
+		"@capacitor/android": "^8.5.0",
+		"@capacitor/app": "^8.1.1",
+		"@capacitor/browser": "^8.0.4",
+		"@capacitor/core": "^8.5.0",
+		"@capacitor/filesystem": "^8.1.2",
+		"@capacitor/share": "^8.0.1",
 		"bootstrap": "^4.6.2",
 		"fflate": "^0.7.3",
 		"lucide-vue": "^0.298.0",
@@ -67,7 +79,9 @@
 		"appId": "com.snowstorm.particle-editor",
 		"productName": "Snowstorm",
 		"artifactName": "Snowstorm-${version}-${os}-${arch}.${ext}",
-		"directories": {"output": "release"},
+		"directories": {
+			"output": "release"
+		},
 		"files": [
 			"desktop/**/*",
 			"index.html",
@@ -80,22 +94,55 @@
 			"mcp_server/package.json"
 		],
 		"extraResources": [
-			{"from": "mcp_server/dist", "to": "mcp_server/dist"},
-			{"from": "mcp_server/package.json", "to": "mcp_server/package.json"},
-			{"from": "mcp_server/node_modules", "to": "mcp_server/node_modules"}
+			{
+				"from": "mcp_server/dist",
+				"to": "mcp_server/dist"
+			},
+			{
+				"from": "mcp_server/package.json",
+				"to": "mcp_server/package.json"
+			},
+			{
+				"from": "mcp_server/node_modules",
+				"to": "mcp_server/node_modules"
+			}
 		],
 		"fileAssociations": [
-			{"ext": "particle.json", "name": "Minecraft Bedrock Particle", "description": "Snowstorm 粒子文件", "role": "Editor"}
+			{
+				"ext": "particle.json",
+				"name": "Minecraft Bedrock Particle",
+				"description": "Snowstorm 粒子文件",
+				"role": "Editor"
+			}
 		],
 		"win": {
-			"target": [{"target": "nsis", "arch": ["x64"]}],
+			"target": [
+				{
+					"target": "nsis",
+					"arch": [
+						"x64"
+					]
+				}
+			],
 			"artifactName": "Snowstorm-${version}-Windows-${arch}.${ext}",
 			"icon": "icon.png"
 		},
 		"mac": {
 			"target": [
-				{"target": "dmg", "arch": ["x64", "arm64"]},
-				{"target": "zip", "arch": ["x64", "arm64"]}
+				{
+					"target": "dmg",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				},
+				{
+					"target": "zip",
+					"arch": [
+						"x64",
+						"arm64"
+					]
+				}
 			],
 			"artifactName": "Snowstorm-${version}-macOS-${arch}.${ext}",
 			"icon": "icon_full.png",
@@ -103,8 +150,18 @@
 		},
 		"linux": {
 			"target": [
-				{"target": "AppImage", "arch": ["x64"]},
-				{"target": "deb", "arch": ["x64"]}
+				{
+					"target": "AppImage",
+					"arch": [
+						"x64"
+					]
+				},
+				{
+					"target": "deb",
+					"arch": [
+						"x64"
+					]
+				}
 			],
 			"artifactName": "Snowstorm-${version}-Linux-${arch}.${ext}",
 			"icon": "icon_full.png",

@@ -1,0 +1,14 @@
+{
+  "appId": "com.ganquanonline.snowstorm",
+  "appName": "Snowstorm",
+  "webDir": "android-web",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "App": {
+      "disableBackButtonHandler": true
+    }
+  }
+}

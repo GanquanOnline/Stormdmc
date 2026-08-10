@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要发布的版本标签，例如 v3.2.7'
+        description: '要发布的版本标签，例如 v3.2.8'
         required: true
         type: string
 
@@ -101,9 +101,56 @@ jobs:
           path: ${{ matrix.artifact_glob }}
           if-no-files-found: error
 
+  android:
+    name: 构建 Android 客户端
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: 设置 Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: 设置 Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 安装 Android API 36
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: 安装根项目依赖
+        run: npm ci
+
+      - name: 设置 Gradle Wrapper 权限
+        run: chmod +x android/gradlew
+
+      - name: 构建 Android APK
+        run: npm run android:build:apk
+
+      - name: 构建 Android AAB
+        run: npm run android:build:aab
+
+      - name: 上传 Android 客户端
+        uses: actions/upload-artifact@v4
+        with:
+          name: stormdmc-android-client
+          path: |
+            release/*.apk
+            release/*.aab
+          if-no-files-found: error
+
   release:
     name: 发布 GitHub Release
-    needs: [validate, desktop]
+    needs: [validate, desktop, android]
     runs-on: ubuntu-latest
     steps:
       - name: 检出代码
@@ -127,6 +174,12 @@ jobs:
           name: stormdmc-macos-client
           path: release
 
+      - name: 下载 Android 客户端
+        uses: actions/download-artifact@v4
+        with:
+          name: stormdmc-android-client
+          path: release
+
       - name: 创建 Release
         uses: softprops/action-gh-release@v2
         with:
@@ -137,10 +190,10 @@ jobs:
             ## 本次更新
 
             - 更新 Snowstorm 主项目与 VS Code 扩展补丁版本。
-            - 集成 MCP 本地服务、浏览器桥接、AI 修改审批、预览截图和工作区原子保存能力。
-            - 增加 Windows、Linux、macOS 三平台桌面客户端、`.particle.json` 文件关联、单实例启动和桌面端复制 MCP 配置。
-            - 桌面版可识别 MCP 端口占用进程，并在用户确认后解除占用继续启动。
-            - 项目仓库、问题反馈、扩展元数据和 Wiki 链接已迁移到 GanquanOnline/Stormdmc。
-            - 更新中文 README、MCP 使用指南和 GitHub Wiki。
-            - 增加自动构建、测试与 Release 发布工作流。
+            - 新增基于 Capacitor 8 的 Android 客户端，支持触控编辑、安全区域适配和系统返回键。
+            - Android 版支持从其他应用打开 JSON，并通过系统分享面板导出粒子 JSON 与纹理 PNG。
+            - Release 工作流新增 Android API 36 构建任务，同时发布可安装 APK 和应用商店 AAB。
+            - 保留 Windows、Linux、macOS 三平台客户端的矩阵构建、MCP 测试和自动发布流程。
+            - 更新中文 README、Android 构建说明、MCP 限制说明和 GitHub Wiki。
+            - Android 端当前不启动 MCP 服务，需要 MCP 时请使用桌面客户端或电脑网页版。
           files: release/*
