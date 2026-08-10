@@ -39,7 +39,7 @@
 		}
 	},
 	"devDependencies": {
-		"@vscode/vsce": "^2.26.1"
+		"@vscode/vsce": "^3.9.2"
 	},
 	"scripts": {
 		"package": "vsce package",
