@@ -417,10 +417,12 @@ export class AgentRuntime {
         if (!this.pending || this.pending.id !== id) throw Object.assign(new Error('Pending change was not found'), {code: 'INVALID_ACTION'});
         const pending = this.pending;
         const particleName = pathToName(pending.documentPath || createPath(Config.identifier), true).replace(/\.particle\.json$/i, '') || 'particles';
-        IO.export({name: `${particleName}.particle.json`, content: compileJSON(pending.after.particle)});
+        const particleSave = await IO.export({name: `${particleName}.particle.json`, content: compileJSON(pending.after.particle)});
+        if (particleSave?.canceled) throw Object.assign(new Error('导出已取消'), {code: 'SAVE_FAILED'});
         if (pending.after.texture?.dataUrl) {
             const textureName = pathToName(pending.after.texture.path || particleName, true).replace(/\.(png|tga)$/i, '') || particleName;
-            IO.export({name: textureName, extensions: ['png'], savetype: 'image', content: pending.after.texture.dataUrl});
+            const textureSave = await IO.export({name: textureName, extensions: ['png'], savetype: 'image', content: pending.after.texture.dataUrl});
+            if (textureSave?.canceled) throw Object.assign(new Error('导出已取消'), {code: 'SAVE_FAILED'});
         }
         pending.status = 'exported';
         this.client.send('approval_result', {pendingId: id, status: 'exported'});

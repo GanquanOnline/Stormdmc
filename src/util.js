@@ -346,14 +346,14 @@ const IO = {
 		var file_name = options.name + (options.extensions ? '.'+options.extensions[0] : '')
 		var callback_used;
 		if (window.snowstormDesktop && typeof window.snowstormDesktop.saveFile === 'function') {
-			window.snowstormDesktop.saveFile({
+			return window.snowstormDesktop.saveFile({
 				name: file_name,
 				content: options.content,
 				binary: options.savetype === 'image'
-			}).then(() => {
+			}).then(result => {
 				if (typeof cb === 'function') cb();
-			}).catch(error => console.error('Snowstorm save failed', error));
-			return;
+				return result;
+			});
 		}
 
 		if (window.chooseFile) {}
