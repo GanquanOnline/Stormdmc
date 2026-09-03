@@ -63,7 +63,7 @@
 		"@capacitor/filesystem": "^8.1.2",
 		"@capacitor/share": "^8.0.1",
 		"bootstrap": "^4.6.2",
-		"fflate": "^0.7.3",
+		"fflate": "^0.7.5",
 		"lucide-vue": "^0.298.0",
 		"molangjs": "^1.6.6",
 		"prismjs": "^1.28.0",
