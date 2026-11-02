@@ -14,7 +14,7 @@
     "e2e": "node --import tsx --test test/e2e/**/*.test.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/node": "2.0.0",
+    "@modelcontextprotocol/node": "2.1.0",
     "@modelcontextprotocol/server": "2.0.0",
     "ws": "^8.18.0",
     "zod": "^4.2.0"
